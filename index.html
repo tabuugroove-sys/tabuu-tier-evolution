@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>TABUU · Tier Evolution T1 → T9</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  body { background:#0a0a12; color:#fff; padding:30px 20px; min-height:100vh; }
+  h1 { text-align:center; font-size:22px; font-weight:700; letter-spacing:2px; margin-bottom:6px; }
+  .sub { text-align:center; color:rgba(255,255,255,0.5); font-size:13px; margin-bottom:30px; }
+  .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; max-width:1400px; margin:0 auto; }
+  @media (max-width: 900px) { .grid { grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid { grid-template-columns:1fr; } }
+  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; transition:transform 0.25s, border-color 0.25s; cursor:zoom-in; }
+  .card:hover { transform:translateY(-3px); border-color:rgba(74,158,255,0.6); }
+  .card img { width:100%; display:block; }
+  .footer { text-align:center; margin-top:40px; color:rgba(255,255,255,0.35); font-size:11px; }
+  .lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; justify-content:center; align-items:center; z-index:1000; padding:20px; }
+  .lightbox.active { display:flex; }
+  .lightbox img { max-width:100%; max-height:100%; }
+  .close { position:fixed; top:20px; right:30px; font-size:36px; color:#fff; cursor:pointer; background:none; border:none; }
+</style>
+</head>
+<body>
+
+<h1>TABUU · EVOLUTION T1 → T9</h1>
+<div class="sub">noname bedroom → anti-fashion legend · fee + metrics overlay</div>
+
+<div class="grid">
+  <div class="card"><img src="T1_zero_annotated.png" alt="T1 Zero"></div>
+  <div class="card"><img src="T2_studio_first_render_annotated.png" alt="T2 First Release"></div>
+  <div class="card"><img src="T3_local_sp_annotated.png" alt="T3 Local SP"></div>
+  <div class="card"><img src="T4_regional_br_annotated.png" alt="T4 Regional BR"></div>
+  <div class="card"><img src="T5_international_annotated.png" alt="T5 International"></div>
+  <div class="card"><img src="T6_ranked_annotated.png" alt="T6 Ranked"></div>
+  <div class="card"><img src="T7_top_tier_annotated.png" alt="T7 Top Tier"></div>
+  <div class="card"><img src="T8_dj_mag_100_annotated.png" alt="T8 DJ Mag 100"></div>
+  <div class="card"><img src="T9_legendary_annotated.png" alt="T9 Legendary"></div>
+</div>
+
+<div class="footer">Калибровка чисел: IQ-01 Fee Map + IQ-02 Rankings That Matter (MARUX research)</div>
+
+<div class="lightbox" id="lb"><button class="close" id="cls">×</button><img id="lbi" src=""></div>
+
+<script>
+  const lb = document.getElementById('lb');
+  const lbi = document.getElementById('lbi');
+  document.querySelectorAll('.card img').forEach(img => {
+    img.addEventListener('click', () => {
+      lbi.src = img.src;
+      lb.classList.add('active');
+    });
+  });
+  document.getElementById('cls').addEventListener('click', () => lb.classList.remove('active'));
+  lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('active'); });
+</script>
+
+</body>
+</html>
