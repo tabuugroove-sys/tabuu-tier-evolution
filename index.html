@@ -11,48 +11,377 @@
   .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; max-width:1400px; margin:0 auto; }
   @media (max-width: 900px) { .grid { grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 600px) { .grid { grid-template-columns:1fr; } }
-  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; transition:transform 0.25s, border-color 0.25s; cursor:zoom-in; }
-  .card:hover { transform:translateY(-3px); border-color:rgba(74,158,255,0.6); }
-  .card img { width:100%; display:block; }
+
+  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; transition:transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor:pointer; position:relative; }
+  .card:hover { transform:translateY(-3px); border-color:rgba(74,158,255,0.6); box-shadow: 0 0 20px rgba(74,158,255,0.2); }
+  .card img { width:100%; display:block; transition:opacity 0.25s; }
+  .card:hover img { opacity:0.85; }
+  .card-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%); padding:20px 12px 12px; font-size:12px; font-weight:500; letter-spacing:0.5px; }
+
   .footer { text-align:center; margin-top:40px; color:rgba(255,255,255,0.35); font-size:11px; }
-  .lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; justify-content:center; align-items:center; z-index:1000; padding:20px; }
-  .lightbox.active { display:flex; }
-  .lightbox img { max-width:100%; max-height:100%; }
-  .close { position:fixed; top:20px; right:30px; font-size:36px; color:#fff; cursor:pointer; background:none; border:none; }
+
+  /* Modal */
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; justify-content:center; align-items:center; z-index:1000; padding:20px; overflow-y:auto; }
+  .modal.active { display:flex; }
+  .modal-content { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; max-width:800px; width:100%; padding:40px; max-height:85vh; overflow-y:auto; }
+  .modal-close { position:fixed; top:20px; right:30px; font-size:36px; color:#fff; cursor:pointer; background:none; border:none; z-index:1001; }
+  .modal-close:hover { color:rgba(255,255,255,0.7); }
+
+  .modal h2 { font-size:24px; margin-bottom:8px; }
+  .modal-tier { font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:24px; letter-spacing:1px; }
+
+  .section { margin-bottom:28px; }
+  .section h3 { font-size:13px; text-transform:uppercase; letter-spacing:1px; color:rgba(74,158,255,0.8); margin-bottom:12px; }
+
+  .metrics { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; }
+  .metric-item { background:rgba(74,158,255,0.05); border:1px solid rgba(74,158,255,0.2); border-radius:8px; padding:12px; }
+  .metric-label { font-size:11px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:0.5px; }
+  .metric-value { font-size:14px; font-weight:500; color:#fff; }
+
+  .checklist { list-style:none; }
+  .checklist li { padding:10px 0; padding-left:24px; position:relative; border-bottom:1px solid rgba(255,255,255,0.05); font-size:14px; line-height:1.4; }
+  .checklist li:last-child { border-bottom:none; }
+  .checklist li:before { content:"✓"; position:absolute; left:0; color:rgba(74,158,255,0.6); font-weight:bold; }
+
+  .warning { background:rgba(255,165,0,0.05); border:1px solid rgba(255,165,0,0.2); border-radius:8px; padding:12px; margin-top:16px; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.8); }
+
+  .modal::-webkit-scrollbar { width:8px; }
+  .modal::-webkit-scrollbar-track { background:rgba(255,255,255,0.05); border-radius:4px; }
+  .modal::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
+  .modal::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.15); }
+
+  .modal-content::-webkit-scrollbar { width:8px; }
+  .modal-content::-webkit-scrollbar-track { background:transparent; }
+  .modal-content::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
+  .modal-content::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.15); }
 </style>
 </head>
 <body>
 
 <h1>TABUU · EVOLUTION T1 → T9</h1>
-<div class="sub">noname bedroom → anti-fashion legend · fee + metrics overlay</div>
+<div class="sub">noname bedroom → anti-fashion legend · fee + metrics overlay · click to expand</div>
 
-<div class="grid">
-  <div class="card"><img src="T1_zero_annotated.png" alt="T1 Zero"></div>
-  <div class="card"><img src="T2_studio_first_render_annotated.png" alt="T2 First Release"></div>
-  <div class="card"><img src="T3_local_sp_annotated.png" alt="T3 Local SP"></div>
-  <div class="card"><img src="T4_regional_br_annotated.png" alt="T4 Regional BR"></div>
-  <div class="card"><img src="T5_international_annotated.png" alt="T5 International"></div>
-  <div class="card"><img src="T6_ranked_annotated.png" alt="T6 Ranked"></div>
-  <div class="card"><img src="T7_top_tier_annotated.png" alt="T7 Top Tier"></div>
-  <div class="card"><img src="T8_dj_mag_100_annotated.png" alt="T8 DJ Mag 100"></div>
-  <div class="card"><img src="T9_legendary_annotated.png" alt="T9 Legendary"></div>
+<div class="grid" id="grid">
+  <!-- Cards will be generated by JavaScript -->
 </div>
 
 <div class="footer">Калибровка чисел: IQ-01 Fee Map + IQ-02 Rankings That Matter (MARUX research)</div>
 
-<div class="lightbox" id="lb"><button class="close" id="cls">×</button><img id="lbi" src=""></div>
+<div class="modal" id="modal">
+  <button class="modal-close" id="modal-close">×</button>
+  <div class="modal-content" id="modal-body"></div>
+</div>
 
 <script>
-  const lb = document.getElementById('lb');
-  const lbi = document.getElementById('lbi');
-  document.querySelectorAll('.card img').forEach(img => {
-    img.addEventListener('click', () => {
-      lbi.src = img.src;
-      lb.classList.add('active');
-    });
-  });
-  document.getElementById('cls').addEventListener('click', () => lb.classList.remove('active'));
-  lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('active'); });
+const tiers = [
+  {
+    num: 1,
+    title: 'Zero',
+    subtitle: 'Bedroom Producer',
+    img: 'T1_zero_annotated.png',
+    fee: '$0',
+    location: 'Bedroom',
+    metrics: {
+      'Spotify': '0–500 /mo',
+      'Instagram': '0',
+      'Beatport': 'Not listed',
+      'Tracklists': 'Hidden',
+      'Bookings': 'None'
+    },
+    goal: 'Цель: Завершить первый трек и загрузить на платформы',
+    actions: [
+      'Закончить первый оригинальный трек (минимум 3 мин)',
+      'Дистрибьютировать на Spotify/Apple Music (Distrokid или аналог)',
+      'Создать Instagram аккаунт с 3–5 постами',
+      'Загрузить трек на SoundCloud/Beatport',
+      'Добавить в Linktree для ссылок'
+    ],
+    concerts: 'На этом уровне концертов НЕ будет. Это подготовительная фаза — сосредоточься на создании музыки.',
+    tips: 'Не занимайся продвижением, пока трек не будет готов. Качество > всё.'
+  },
+  {
+    num: 2,
+    title: 'First Release',
+    subtitle: 'Starter',
+    img: 'T2_studio_first_render_annotated.png',
+    fee: '$0–200',
+    location: 'Studio session',
+    metrics: {
+      'Spotify': '1k–5k /mo',
+      'Instagram': '~500',
+      'Beatport': 'Afro House chart',
+      'Tracklists': '1+ на DSP',
+      'Bookings': 'Микро-эвенты'
+    },
+    goal: 'Цель: Получить первый букинг и начать строить соцсети',
+    actions: [
+      'Выпустить 2–3 трека в жанре (один релиз в месяц)',
+      'Попасть в плейлисты Spotify (питч через Spotify for Artists)',
+      'Дойти до 1k подписчиков на Instagram (контент-план)',
+      'Попросить первый трак на плейлист DJ-друзьям',
+      'Питчить себя малым площадкам (бары, подвалы, мини-клубы)',
+      'Создать первый микс/DJ set для SoundCloud'
+    ],
+    concerts: '🎯 ПЕРВЫЕ БУКИНГИ: микро-эвенты, вечеринки друзей, мини-клубы с гонораром $0–50',
+    tips: 'Не жди перфекции. Выступай везде где есть звук и 5+ людей. Каждый сет = опыт + видео для Инсты.'
+  },
+  {
+    num: 3,
+    title: 'Local SP',
+    subtitle: 'São Paulo Kid',
+    img: 'T3_local_sp_annotated.png',
+    fee: '$200–800',
+    location: 'São Paulo clubs',
+    metrics: {
+      'Spotify': '10k–100k /mo',
+      'Instagram': '2k–10k',
+      'Beatport': 'Top 500',
+      'Tracklists': '1–10 на 180 платформ',
+      'Bookings': '3+ только SP'
+    },
+    goal: 'Цель: Стать локальным артистом с регулярными букингами в городе',
+    actions: [
+      'Выпустить релиз на локальный лейбл или самостоятельно (Bandcamp, Beatport)',
+      'Попасть в Top 500 на Beatport в категории Afro House',
+      'Выступить в 3–5 разных клубах SP (получить контакты промоутеров)',
+      'Дойти до 5k+ подписчиков в Инсте (видео сетов, студийные посты)',
+      'Питчить себя локальным промоутерам (email + Spotify ссылка)',
+      'Создать DJ микс каждый месяц для SoundCloud/Mixcloud',
+      'Попросить фичер трека у локального артиста'
+    ],
+    concerts: '🎯 РЕГУЛЯРНЫЕ БУКИНГИ: 3–5 выступлений в месяц в местных клубах, гонорар $200–800/сет',
+    tips: 'На этом уровне букинги приходят от личных контактов. Питчи + видео сета = 80% успеха. Будь у мест где ты хочешь играть.'
+  },
+  {
+    num: 4,
+    title: 'Regional BR',
+    subtitle: 'BR Scene Artist',
+    img: 'T4_regional_br_annotated.png',
+    fee: '$800–2500',
+    location: 'Brazil regional',
+    metrics: {
+      'Spotify': '10k–50k /mo',
+      'Instagram': '15k–50k',
+      'Beatport': 'Top 30 AH',
+      'Tracklists': '10–30 на 180',
+      'Bookings': '9+ cities'
+    },
+    goal: 'Цель: Расширить за пределы одного города, получить менеджер, запустить собственный лейбл',
+    actions: [
+      'Выпустить 2+ релиза за 6 месяцев (Bandcamp, Beatport, Defected/Из)',
+      'Попасть в Top 30 на Beatport Afro House (требует 5+ качественных релизов)',
+      'Дойти до 15k+ в Инсте (видео живых сетов, студийные сессии, стори)',
+      'Выступить в 3–5 других городах Бразилии (Rio, Belo Horizonte, Salvador)',
+      'Получить менеджера/промоутера который знает локальные клубы',
+      'Создать свой саблейбл на Bandcamp (даже для собственных треков)',
+      'Питчить себя на региональные фестивали (подай заявку на 5–10)'
+    ],
+    concerts: '🎯 РАСШИРЕНИЕ: 8–12 букингов в месяц по Бразилии, гонорар $800–2500/сет, первые фестивальные даты',
+    tips: 'На этом уровне нужен менеджер. Без него ты упустишь половину возможностей. Лейбл = кредит к репутации.'
+  },
+  {
+    num: 5,
+    title: 'International',
+    subtitle: 'Intl Traveler',
+    img: 'T5_international_annotated.png',
+    fee: 'EU €3k–6k / BR $2.5k–6k',
+    location: 'EU/US/LATAM',
+    metrics: {
+      'Spotify': '50k–250k /mo',
+      'Instagram': '25k–150k',
+      'Beatport': 'Top 300 producers',
+      'Editorial': 'Spotify feature',
+      'Bookings': 'International'
+    },
+    goal: 'Цель: Международная карьера, первые выступления в Европе, синглы на топовых лейблах',
+    actions: [
+      'Выпустить трек на топовый LATAM лейбл (Black Coffee, Defected, FFRR)',
+      'Получить Spotify плейлист фичер (RFI или питч через пиарщика)',
+      'Дойти до 30k+ в Инсте (контент о путешествиях, выступлениях, студии)',
+      'Нанять международного букинг-агента для EU (важно!)',
+      'Выступить в 2–3 европейских странах (контакты через агента)',
+      'Выпустить 2 сингла за 6 месяцев на хорошие лейблы',
+      'Питчить себя на Ibiza/Европейские фестивали через агента'
+    ],
+    concerts: '🎯 МЕЖДУНАРОДНЫЙ РАЗМАХ: 15–20 букингов в год, гонорар €3k–6k за EU клубы, первые фестивальные слоты',
+    tips: 'Без букинг-агента → забудь про EU. С агентом → можешь грать каждый выходной. Выбери агента тщательно.'
+  },
+  {
+    num: 6,
+    title: 'Ranked',
+    subtitle: 'Magazine Cool',
+    img: 'T6_ranked_annotated.png',
+    fee: 'EU €8k–18k / US $12k–25k',
+    location: 'EU/US festivals',
+    metrics: {
+      'Spotify': '200k–800k /mo',
+      'Instagram': '150k–500k',
+      'Beatport': 'Top 10 AH',
+      'Editorial': 'Major playlists',
+      'Bookings': 'Premium clubs'
+    },
+    goal: 'Цель: Попасть в топ-10 Beatport, выступлять на крупных фестивалях, знаменитость в кругах',
+    actions: [
+      'Выпустить хит-трек (1M+ plays за 3 месяца)',
+      'Попасть в Top 10 на Beatport (требует 8+ релизов на топовых лейблах)',
+      'Получить мажор-плейлист на Spotify (eMbassy, New Music Daily и т.д.)',
+      'Дойти до 100k+ в Инсте (сотрудничество с брендами, спонсорство)',
+      'Выступить на 3+ крупных фестивалях (Awakenings, Circoloco, Burning Man и т.д.)',
+      'Запустить соб. лейбл с 3–5 качественными релизами',
+      'Сотрудничать с диджеями T7–T8 уровня (фичеры, ремиксы)'
+    ],
+    concerts: '🎯 ТОПОВЫЙ СТАТУС: 30–40 букингов/год, гонорар €8k–18k за EU, $12k–25k за US фестивали, постоянные европейские даты',
+    tips: 'На этом уровне нужна публикация в DJ Mag, интервью, видео. Музыка сама себя не продаст. Нужна история.'
+  },
+  {
+    num: 7,
+    title: 'Top Tier',
+    subtitle: 'Brand Headliner',
+    img: 'T7_top_tier_annotated.png',
+    fee: 'EU €20k–50k / US $30k–75k',
+    location: 'Major festivals',
+    metrics: {
+      'Spotify': '800k–3M /mo',
+      'Instagram': '500k–1.3M',
+      'Beatport': 'Top 5 consistent',
+      'Editorial': 'All major playlists',
+      'Bookings': 'Headline slots'
+    },
+    goal: 'Цель: Хедлайнер крупных фестивалей, собственное шоу, легенда жанра',
+    actions: [
+      'Выпустить 2+ хит-трека (2M+ plays каждый)',
+      'Быть в Top 5 на Beatport 6+ месяцев подряд',
+      'Получить фичер в DJ Mag / Resident Advisor',
+      'Запустить собственное радио-шоу (Boiler Room, DJ Mag)',
+      'Выступить хедлайнером на 5+ крупных фестивалей',
+      'Провести мировой тур (20+ стран)',
+      'Сотрудничество с Fashion брендами (clothes line, DJ set для показа)',
+      'Выпустить 1 качественный микс-альбом'
+    ],
+    concerts: '🎯 ЛЕГЕНДА: 50+ букингов/год, гонорар €20k–50k за EU клубы, $30k–75k за US, хедлайнер статус на фестивалях',
+    tips: 'На этом уровне ты не охотишься за букингами — они охотятся за тобой. Фокус на искусстве и брендировании.'
+  },
+  {
+    num: 8,
+    title: 'DJ Mag 100',
+    subtitle: 'Iconic Signature',
+    img: 'T8_dj_mag_100_annotated.png',
+    fee: '$40k–100k',
+    location: 'Worldwide',
+    metrics: {
+      'Spotify': '3M–15M /mo',
+      'Instagram': '1.5M–5M',
+      'Beatport': '#1 consistent',
+      'DJ Mag': 'Top 100 ranking',
+      'Bookings': 'Celebrity status'
+    },
+    goal: 'Цель: Международное имя, Грэмми-номинация, культ-статус',
+    actions: [
+      'Быть в DJ Mag Top 100 3+ года подряд',
+      'Выпустить 3+ супер-хита (5M+ plays каждый)',
+      'Иметь #1 трек на Beatport 3+ раза',
+      'Гастроль мира (100+ выступлений в год)',
+      'Запустить собственный лейбл с успешными релизами',
+      'Сотрудничество с основными брендами (Hermès, luxury)',
+      'Documentaire/фильм о тебе на Netflix/Amazon Prime',
+      'Резидентура на Ibiza в культовом клубе (Pacha, Hï)'
+    ],
+    concerts: '🎯 ИКОНА: 100+ букингов/год, гонорар $40k–100k за сет, резидентура, собственные фестивали',
+    tips: 'На этом уровне ты не диджей — ты бренд. Каждое решение влияет на музыку и культуру.'
+  },
+  {
+    num: 9,
+    title: 'Legendary',
+    subtitle: 'Anti-fashion Icon',
+    img: 'T9_legendary_annotated.png',
+    fee: '$300k–1.5M / residency',
+    location: 'Global',
+    metrics: {
+      'Spotify': '15M–25M+ /mo',
+      'Instagram': '5M+',
+      'Awards': 'Grammy-nominated',
+      'Status': 'Cultural icon',
+      'Influence': 'Defines genre'
+    },
+    goal: 'Цель: Определять будущее жанра, влияние на культуру, бессмертие',
+    actions: [
+      'Выпустить альбом-шедевр (известный музыкальный критикам)',
+      'Быть номинантом Грэмми / выиграть',
+      'Иметь влияние на культурный дискурс (интервью в New York Times, The Guardian)',
+      'Запустить благотворительный фонд (music education)',
+      'Написать мемуары / книгу',
+      'Коллаборация с другими легендами (Quincy Jones, Rick Rubin)',
+      'Создать иконическое шоу (arena tour, Coachella headline)',
+      'Провести мастер-класс в престижных школах (Berklee, Juilliard)'
+    ],
+    concerts: '🎯 БЕССМЕРТИЕ: 50–100 букингов/год, каждый сет — событие, резидентуры по выбору, $300k–1.5M за дату, фестивали создаются вокруг тебя',
+    tips: 'Этот уровень = искусство + наука + политика. Ты уже не музыкант — ты историческая фигура.'
+  }
+];
+
+const grid = document.getElementById('grid');
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+const modalClose = document.getElementById('modal-close');
+
+// Generate cards
+tiers.forEach(tier => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<img src="${tier.img}" alt="T${tier.num}"><div class="card-label">T${tier.num} · ${tier.title}</div>`;
+  card.addEventListener('click', () => showModal(tier));
+  grid.appendChild(card);
+});
+
+function showModal(tier) {
+  modalBody.innerHTML = `
+    <h2>T${tier.num} · ${tier.title}</h2>
+    <div class="modal-tier">${tier.subtitle}</div>
+
+    <div class="section">
+      <h3>📊 Метрики</h3>
+      <div class="metrics">
+        ${Object.entries(tier.metrics).map(([k, v]) => `
+          <div class="metric-item">
+            <div class="metric-label">${k}</div>
+            <div class="metric-value">${v}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>💰 Гонорар</h3>
+      <div class="metric-value">${tier.fee}</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px;">${tier.location}</div>
+    </div>
+
+    <div class="section">
+      <h3>🎯 Что нужно сделать</h3>
+      <ul class="checklist">
+        ${tier.actions.map(a => `<li>${a}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>🎤 Концерты</h3>
+      <div style="background:rgba(74,158,255,0.08); border:1px solid rgba(74,158,255,0.2); border-radius:8px; padding:16px; font-size:14px; line-height:1.6;">
+        ${tier.concerts}
+      </div>
+    </div>
+
+    ${tier.tips ? `<div class="warning">💡 ${tier.tips}</div>` : ''}
+  `;
+  modal.classList.add('active');
+}
+
+modalClose.addEventListener('click', () => modal.classList.remove('active'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+
+// Close modal on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') modal.classList.remove('active');
+});
 </script>
 
 </body>
