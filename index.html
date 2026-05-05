@@ -12,12 +12,19 @@
   @media (max-width: 900px) { .grid { grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 600px) { .grid { grid-template-columns:1fr; } }
 
-  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; transition:transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor:pointer; position:relative; }
+  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; transition:transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor:pointer; position:relative; display:flex; flex-direction:column; }
   .card:hover { transform:translateY(-3px); border-color:rgba(74,158,255,0.6); box-shadow: 0 0 20px rgba(74,158,255,0.2); }
   .card img { width:100%; display:block; transition:opacity 0.25s; }
   .card:hover img { opacity:0.85; }
-  .card-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.9) 60%); padding:40px 16px 16px; font-size:15px; font-weight:700; letter-spacing:0.5px; }
-  .card-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px; font-weight:500; letter-spacing:0.3px; }
+  .card-info { padding:16px 16px 18px; }
+  .card-title { font-size:16px; font-weight:700; letter-spacing:0.5px; color:#ffd54a; }
+  .card-subtitle { font-size:12px; color:rgba(255,255,255,0.55); margin-top:3px; font-weight:500; letter-spacing:0.3px; }
+  .card-fee { font-size:13px; color:rgba(255,255,255,0.85); margin-top:8px; font-weight:600; }
+  .card-actions-title { font-size:10px; text-transform:uppercase; letter-spacing:1.2px; color:rgba(74,158,255,0.85); margin-top:14px; margin-bottom:8px; font-weight:600; }
+  .card-actions { list-style:none; padding:0; margin:0; }
+  .card-actions li { font-size:11.5px; color:rgba(255,255,255,0.78); padding:4px 0; line-height:1.45; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .card-actions li:last-child { border-bottom:none; }
+  .card-cta { font-size:10px; color:rgba(255,255,255,0.4); margin-top:12px; text-transform:uppercase; letter-spacing:1px; }
 
   .footer { text-align:center; margin-top:40px; color:rgba(255,255,255,0.35); font-size:11px; }
 
@@ -91,7 +98,8 @@ const tiers = [
       { num: '1. Finish one track', desc: 'A real 3–5 min mix. Upload to SoundCloud. Test it in your DJ app.' },
       { num: '2. Learn to beatmatch', desc: 'Know your DJ controller/turntables. Don\'t embarrass yourself at first gig.' },
       { num: '3. Play 1–2 hour set', desc: 'Show up on time. Bring your gear. Don\'t get drunk. Just play.' },
-      { num: '4. Get feedback', desc: 'Did people enjoy it? Did you mess up? Learn.' }
+      { num: '4. Film yourself DJing', desc: 'Even just phone camera. You need video proof to ever book a real gig.' },
+      { num: '5. Get honest feedback', desc: 'Did people enjoy it? Did you mess up? Learn from it. Don\'t lie to yourself.' }
     ],
     metricsExplain: 'You won\'t have metrics yet. Nobody cares. You\'re learning. Focus on not failing the first gig.',
     fee: '$0 (drinks)',
@@ -269,7 +277,18 @@ const modalClose = document.getElementById('modal-close');
 tiers.forEach(tier => {
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = `<img src="${tier.img}" alt="T${tier.num}"><div class="card-label">T${tier.num} · ${tier.title.toUpperCase()}<div class="card-subtitle">${tier.subtitle}</div></div>`;
+  const actionsList = tier.actions.map(a => `<li>${a.num}</li>`).join('');
+  card.innerHTML = `
+    <img src="${tier.img}" alt="T${tier.num}">
+    <div class="card-info">
+      <div class="card-title">T${tier.num} · ${tier.title.toUpperCase()}</div>
+      <div class="card-subtitle">${tier.subtitle}</div>
+      <div class="card-fee">Fee: ${tier.fee}</div>
+      <div class="card-actions-title">🎬 What unlocks this tier</div>
+      <ul class="card-actions">${actionsList}</ul>
+      <div class="card-cta">Click for details →</div>
+    </div>
+  `;
   card.addEventListener('click', () => showModal(tier));
   grid.appendChild(card);
 });
