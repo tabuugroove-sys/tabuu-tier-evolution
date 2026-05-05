@@ -16,7 +16,8 @@
   .card:hover { transform:translateY(-3px); border-color:rgba(74,158,255,0.6); box-shadow: 0 0 20px rgba(74,158,255,0.2); }
   .card img { width:100%; display:block; transition:opacity 0.25s; }
   .card:hover img { opacity:0.85; }
-  .card-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%); padding:20px 12px 12px; font-size:12px; font-weight:500; letter-spacing:0.5px; }
+  .card-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.9) 60%); padding:40px 16px 16px; font-size:15px; font-weight:700; letter-spacing:0.5px; }
+  .card-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px; font-weight:500; letter-spacing:0.3px; }
 
   .footer { text-align:center; margin-top:40px; color:rgba(255,255,255,0.35); font-size:11px; }
 
@@ -83,7 +84,7 @@ const tiers = [
     num: 1,
     title: 'Zero',
     subtitle: 'Bedroom Producer',
-    img: 'T1_zero_annotated.png',
+    img: 'T1_zero.png',
     focus: 'Can he DJ without breaking everything? Will he show up?',
     whoDecides: 'Friend / micro-venue owner / another local DJ',
     actions: [
@@ -102,7 +103,7 @@ const tiers = [
     num: 2,
     title: 'First Release',
     subtitle: 'Starter',
-    img: 'T2_studio_first_render_annotated.png',
+    img: 'T2_studio_first_render.png',
     focus: 'He made real music. Not just talking about it.',
     whoDecides: 'Small promoter / underground event / friend with a party',
     actions: [
@@ -122,7 +123,7 @@ const tiers = [
     num: 3,
     title: 'Local SP',
     subtitle: 'São Paulo Proof',
-    img: 'T3_local_sp_annotated.png',
+    img: 'T3_local_sp.png',
     focus: 'He\'s not unknown. He can DJ. He\'s part of the scene.',
     whoDecides: 'Club promoter / São Paulo collective / small booking agent',
     actions: [
@@ -142,7 +143,7 @@ const tiers = [
     num: 4,
     title: 'Regional BR',
     subtitle: 'Brazil Scene Artist',
-    img: 'T4_regional_br_annotated.png',
+    img: 'T4_regional_br.png',
     focus: 'He plays multiple cities. His music is known in the scene.',
     whoDecides: 'Regional booking agent / festivals / bigger clubs (Rio, Salvador, BH)',
     actions: [
@@ -162,7 +163,7 @@ const tiers = [
     num: 5,
     title: 'International',
     subtitle: 'Intl Traveler',
-    img: 'T5_international_annotated.png',
+    img: 'T5_international.png',
     focus: 'His tracks are in the international Afro House conversation.',
     whoDecides: 'International booking agent / European clubs / festival programmers',
     actions: [
@@ -182,7 +183,7 @@ const tiers = [
     num: 6,
     title: 'Ranked',
     subtitle: 'Magazine Cool',
-    img: 'T6_ranked_annotated.png',
+    img: 'T6_ranked.png',
     focus: 'He\'s in the conversation. Worth featuring in press.',
     whoDecides: 'Premium clubs (Ibiza, NYC) / Major festivals / Music media',
     actions: [
@@ -202,7 +203,7 @@ const tiers = [
     num: 7,
     title: 'Top Tier',
     subtitle: 'Brand Headliner',
-    img: 'T7_top_tier_annotated.png',
+    img: 'T7_top_tier.png',
     focus: 'People buy tickets to see HIM. Not just the event.',
     whoDecides: 'Major festivals / Ibiza megaclubs / International promoters',
     actions: [
@@ -222,7 +223,7 @@ const tiers = [
     num: 8,
     title: 'DJ Mag 100',
     subtitle: 'Iconic Signature',
-    img: 'T8_dj_mag_100_annotated.png',
+    img: 'T8_dj_mag_100.png',
     focus: 'His name IS the event. Generations know him.',
     whoDecides: 'Legendary festivals / Film producers / His agent (he has power)',
     actions: [
@@ -242,7 +243,7 @@ const tiers = [
     num: 9,
     title: 'Legendary',
     subtitle: 'Anti-fashion Icon',
-    img: 'T9_legendary_annotated.png',
+    img: 'T9_legendary.png',
     focus: 'He changed music. He changed culture.',
     whoDecides: 'Music history / Cultural impact / Industry looks back',
     actions: [
@@ -268,7 +269,7 @@ const modalClose = document.getElementById('modal-close');
 tiers.forEach(tier => {
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = `<img src="${tier.img}" alt="T${tier.num}"><div class="card-label">T${tier.num} · ${tier.title}</div>`;
+  card.innerHTML = `<img src="${tier.img}" alt="T${tier.num}"><div class="card-label">T${tier.num} · ${tier.title.toUpperCase()}<div class="card-subtitle">${tier.subtitle}</div></div>`;
   card.addEventListener('click', () => showModal(tier));
   grid.appendChild(card);
 });
