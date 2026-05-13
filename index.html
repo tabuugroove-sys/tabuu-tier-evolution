@@ -495,10 +495,19 @@ function fmtDate(iso) {
 }
 
 async function loadCoverFarm() {
+  // Try local (full) first; fall back to public (anonymized) — that's what
+  // GitHub Pages will serve. Cache-bust both.
+  const bust = '?_=' + Date.now();
   try {
-    const res = await fetch('farm_metrics.json?_=' + Date.now());
-    if (!res.ok) throw new Error('no farm_metrics.json');
-    const d = await res.json();
+    let res = await fetch('farm_metrics.json' + bust);
+    let d;
+    if (res.ok) {
+      d = await res.json();
+    } else {
+      res = await fetch('farm_metrics_public.json' + bust);
+      if (!res.ok) throw new Error('no metrics file');
+      d = await res.json();
+    }
     renderCoverFarm(d);
   } catch (e) {
     document.getElementById('cover-updated').innerHTML =
@@ -507,39 +516,47 @@ async function loadCoverFarm() {
 }
 
 function renderCoverFarm(d) {
-  document.getElementById('cover-updated').textContent =
-    `Updated ${fmtDate(d.updated_at)} · ${d.account} · plan ${d.plan}`;
+  const isPublic = !!d.is_public;
+  document.getElementById('cover-updated').textContent = isPublic
+    ? `Updated ${fmtDate(d.updated_at)} · aggregate distribution stats`
+    : `Updated ${fmtDate(d.updated_at)} · ${d.account || ''} · plan ${d.plan || ''}`;
 
   // KPIs
   const t = d.totals;
   document.getElementById('cover-kpis').innerHTML = `
     <div class="kpi up">
-      <div class="kpi-label">Views (7d)</div>
+      <div class="kpi-label">Reach (7d)</div>
       <div class="kpi-value">${fmt(t.views_7d)}</div>
       <div class="kpi-sub">${fmt(t.views_30d)} last 30d</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Views (all-time)</div>
       <div class="kpi-value">${fmt(t.views_total)}</div>
-      <div class="kpi-sub">across ${t.profiles} profiles</div>
+      <div class="kpi-sub">${fmt(t.likes)} likes · ${fmt(t.comments)} comments</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Followers</div>
       <div class="kpi-value">${fmt(t.followers)}</div>
-      <div class="kpi-sub">${fmt(t.likes)} likes · ${fmt(t.comments)} comments</div>
+      <div class="kpi-sub">across distribution channels</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Videos posted</div>
       <div class="kpi-value">${fmt(t.videos)}</div>
-      <div class="kpi-sub">${t.profiles} profiles · ${d.plan} plan</div>
+      <div class="kpi-sub">total uploaded</div>
     </div>
   `;
 
-  // Per platform table
+  // In public mode, hide per-profile and recent-posts sections (sensitive).
+  const sectionTopProfiles = document.getElementById('cover-profiles')?.parentElement;
+  const sectionRecentPosts = document.getElementById('cover-posts')?.parentElement;
+  if (sectionTopProfiles) sectionTopProfiles.style.display = isPublic ? 'none' : '';
+  if (sectionRecentPosts) sectionRecentPosts.style.display = isPublic ? 'none' : '';
+
+  // Per platform table (hide "Profiles" column in public mode)
   const rows = Object.entries(d.by_platform).sort((a,b) => b[1].views_total - a[1].views_total).map(([plat, s]) => `
     <tr>
       <td><strong>${plat}</strong></td>
-      <td class="num">${s.profiles}</td>
+      ${isPublic ? '' : `<td class="num">${s.profiles ?? '—'}</td>`}
       <td class="num">${fmt(s.followers)}</td>
       <td class="num">${fmt(s.views_total)}</td>
       <td class="num">${fmt(s.views_7d)}</td>
@@ -550,14 +567,14 @@ function renderCoverFarm(d) {
   document.getElementById('cover-platforms').innerHTML = `
     <table class="platform-table">
       <thead><tr>
-        <th>Platform</th><th>Profiles</th><th>Followers</th><th>Views total</th><th>Views 7d</th><th>Likes</th><th>Comments</th>
+        <th>Platform</th>${isPublic ? '' : '<th>Profiles</th>'}<th>Followers</th><th>Views total</th><th>Views 7d</th><th>Likes</th><th>Comments</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
   `;
 
-  // Top profiles
-  document.getElementById('cover-profiles').innerHTML = (d.top_profiles || []).map(p => {
+  // Top profiles (only when private data is available)
+  if (d.top_profiles) document.getElementById('cover-profiles').innerHTML = (d.top_profiles || []).map(p => {
     const handles = Object.entries(p.handles || {}).filter(([_,v]) => v).map(([k,v]) => `${k}: ${v}`).join('<br>');
     const stats = Object.entries(p.platforms || {}).map(([plat,s]) => `
       <div class="pcard-stat"><span>${plat}</span><span class="v">${fmt(s.views_total)}</span></div>
@@ -571,8 +588,8 @@ function renderCoverFarm(d) {
     `;
   }).join('');
 
-  // Recent posts
-  document.getElementById('cover-posts').innerHTML = (d.recent_posts || []).map(p => `
+  // Recent posts (only when private data is available)
+  if (d.recent_posts) document.getElementById('cover-posts').innerHTML = (d.recent_posts || []).map(p => `
     <div class="post-item">
       <div class="plat">${p.platform}</div>
       <div class="cap" title="${(p.caption||'').replace(/"/g,'&quot;')}">${p.caption || p.title || '—'}</div>

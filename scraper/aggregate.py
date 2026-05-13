@@ -151,6 +151,41 @@ def main():
     print(f"[aggregate] Wrote {OUT}")
     for plat, series in hist["timeseries"].items():
         print(f"  {plat}: {len(series)} daily points")
+
+    # ── Public, anonymized version ─────────────────────────────────────
+    # What it does NOT contain: profile pseudonyms, social-media handles,
+    # post URLs/captions, account email, plan name, profile count.
+    # What it contains: aggregate KPIs + per-platform aggregates + daily
+    # timeseries (already a sum across profiles — not reversible).
+    public = {
+        "updated_at": out["updated_at"],
+        "is_public": True,
+        "totals": {
+            "followers": int(totals["followers"]),
+            "views_total": int(totals["views_total"]),
+            "views_7d": int(totals["views_7d"]),
+            "views_30d": int(totals["views_30d"]),
+            "likes": int(totals["likes"]),
+            "comments": int(totals["comments"]),
+            "videos": int(totals["videos"]),
+        },
+        "by_platform": {
+            plat: {
+                "followers": int(s["followers"]),
+                "views_total": int(s["views_total"]),
+                "views_7d": int(s["views_7d"]),
+                "views_30d": int(s["views_30d"]),
+                "likes": int(s["likes"]),
+                "comments": int(s["comments"]),
+                "videos": int(s["videos"]),
+            }
+            for plat, s in by_platform.items()
+        },
+        "timeseries": hist["timeseries"],
+    }
+    PUBLIC_OUT = ROOT / "farm_metrics_public.json"
+    PUBLIC_OUT.write_text(json.dumps(public, indent=2, ensure_ascii=False))
+    print(f"[aggregate] Wrote {PUBLIC_OUT} (anonymized for public hosting)")
     print(f"  Total: {totals['profiles']} profiles · "
           f"{totals['followers']} followers · "
           f"{totals['views_total']:,} views all-time · "

@@ -1,7 +1,11 @@
-# Live metrics — contains farm personas + numbers, keep local
+# Live metrics — contains farm personas, handles, post URLs — keep local
 farm_metrics.json
 farm_history.json
 upload_post_metrics.json
 loudly_metrics.json
 metrics.json
 .DS_Store
+
+# farm_metrics_public.json IS committed — it's the anonymized public version
+# (no profile names, no handles, no post URLs — only aggregate numbers + timeseries)
+!farm_metrics_public.json
