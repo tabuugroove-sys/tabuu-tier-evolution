@@ -1,0 +1,6 @@
+# Live metrics — contains farm personas + numbers, keep local
+farm_metrics.json
+upload_post_metrics.json
+loudly_metrics.json
+metrics.json
+.DS_Store
