@@ -12,6 +12,7 @@ Endpoints used (from https://docs.upload-post.com/openapi.json):
   GET /analytics/{profile}         — engagement metrics per profile
 """
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,11 +21,36 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from secrets import get_secret
-
 OUTPUT_FILE = Path(__file__).parent.parent / "upload_post_metrics.json"
 BW_ITEM_NAME = "TABUU Upload-Post API"
 API_BASE = "https://api.upload-post.com/api"
+
+
+def load_api_key():
+    """
+    Priority:
+      1. UPLOAD_POST_API_KEY env var (set by daily_pull.sh from Keychain)
+      2. macOS Keychain directly
+      3. Bitwarden CLI (fallback)
+    """
+    # 1) env
+    if os.environ.get("UPLOAD_POST_API_KEY"):
+        return os.environ["UPLOAD_POST_API_KEY"], "env"
+    # 2) keychain
+    import subprocess
+    try:
+        r = subprocess.run(
+            ["security", "find-generic-password", "-a", "tabuu",
+             "-s", BW_ITEM_NAME, "-w"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if r.returncode == 0 and r.stdout.strip():
+            return r.stdout.strip(), "keychain"
+    except Exception:
+        pass
+    # 3) bitwarden
+    from secrets import get_secret
+    return get_secret(BW_ITEM_NAME), "bitwarden"
 
 
 def call(path, api_key, params=None):
@@ -53,8 +79,8 @@ def call(path, api_key, params=None):
 
 
 def main():
-    api_key = get_secret(BW_ITEM_NAME)
-    print(f"[upload-post] API key loaded (length: {len(api_key)})")
+    api_key, src = load_api_key()
+    print(f"[upload-post] API key loaded from {src} (length: {len(api_key)})")
 
     out = {
         "scraped_at": datetime.now(timezone.utc).isoformat(),
