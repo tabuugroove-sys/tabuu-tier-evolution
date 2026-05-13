@@ -148,7 +148,7 @@
   <div class="kpi-grid" id="cover-kpis"></div>
 
   <div class="cover-section">
-    <h2>📈 Views over time</h2>
+    <h2>📈 Daily reach over time <span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;letter-spacing:0">(reach_timeseries field — different from KPI "Views" for TikTok)</span></h2>
     <div class="chart-controls" id="chart-controls">
       <button data-period="7" class="active">Week</button>
       <button data-period="30">Month</button>
@@ -606,7 +606,7 @@ function renderCharts(days) {
     const labels = filtered.map(pt => pt.date.slice(5)); // MM-DD
     const values = filtered.map(pt => pt.value);
     const total = values.reduce((a,b) => a+b, 0);
-    document.getElementById(`total-${plat}`).textContent = fmt(total) + ' views';
+    document.getElementById(`total-${plat}`).textContent = fmt(total) + ' reach';
 
     const ctx = document.getElementById(`chart-${plat}`).getContext('2d');
     if (charts[plat]) charts[plat].destroy();
