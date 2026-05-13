@@ -112,8 +112,21 @@
   .post-item a:hover { text-decoration:underline; }
 
   .last-update { max-width:1400px; margin:0 auto 16px; font-size:11px; color:rgba(255,255,255,0.4); text-align:right; }
+
+  /* Charts */
+  .chart-controls { display:flex; gap:6px; margin-bottom:16px; }
+  .chart-controls button { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.6); font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:6px 14px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+  .chart-controls button:hover { color:#fff; border-color:rgba(255,255,255,0.2); }
+  .chart-controls button.active { background:rgba(255,213,74,0.15); border-color:#ffd54a; color:#ffd54a; }
+  .charts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  @media (max-width: 1000px) { .charts-grid { grid-template-columns:1fr; } }
+  .chart-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px; }
+  .chart-card h3 { font-size:12px; text-transform:uppercase; letter-spacing:1.2px; color:rgba(255,255,255,0.6); margin-bottom:4px; font-weight:600; }
+  .chart-card .chart-total { font-size:22px; font-weight:700; color:#fff; margin-bottom:14px; }
+  .chart-card canvas { width:100% !important; height:180px !important; }
 </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <body>
 
 <h1>TABUU · EVOLUTION T1 → T9</h1>
@@ -133,6 +146,33 @@
 <div class="view" id="view-cover">
   <div class="last-update" id="cover-updated">Loading…</div>
   <div class="kpi-grid" id="cover-kpis"></div>
+
+  <div class="cover-section">
+    <h2>📈 Views over time</h2>
+    <div class="chart-controls" id="chart-controls">
+      <button data-period="7" class="active">Week</button>
+      <button data-period="30">Month</button>
+      <button data-period="90">Quarter</button>
+      <button data-period="365">Year</button>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>TikTok</h3>
+        <div class="chart-total" id="total-tiktok">—</div>
+        <canvas id="chart-tiktok"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Instagram</h3>
+        <div class="chart-total" id="total-instagram">—</div>
+        <canvas id="chart-instagram"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>YouTube</h3>
+        <div class="chart-total" id="total-youtube">—</div>
+        <canvas id="chart-youtube"></canvas>
+      </div>
+    </div>
+  </div>
 
   <div class="cover-section">
     <h2>📊 Per platform</h2>
@@ -540,7 +580,70 @@ function renderCoverFarm(d) {
       <div>${p.url ? `<a href="${p.url}" target="_blank">open ↗</a>` : ''}</div>
     </div>
   `).join('');
+
+  // Charts
+  window.__timeseries = d.timeseries || {};
+  renderCharts(7);
 }
+
+// ───── Charts ────────────────────────────────────────────
+const PLAT_COLORS = {
+  tiktok:    { line: '#ff4d6e', fill: 'rgba(255,77,110,0.12)' },
+  instagram: { line: '#e84393', fill: 'rgba(232,67,147,0.12)' },
+  youtube:   { line: '#ff5252', fill: 'rgba(255,82,82,0.12)' },
+};
+
+const charts = {};
+function renderCharts(days) {
+  const ts = window.__timeseries || {};
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+
+  ['tiktok', 'instagram', 'youtube'].forEach(plat => {
+    const series = ts[plat] || [];
+    const filtered = series.filter(pt => new Date(pt.date) >= cutoff);
+    // If we have less data than requested period, pad start with zeros so axis stays honest
+    const labels = filtered.map(pt => pt.date.slice(5)); // MM-DD
+    const values = filtered.map(pt => pt.value);
+    const total = values.reduce((a,b) => a+b, 0);
+    document.getElementById(`total-${plat}`).textContent = fmt(total) + ' views';
+
+    const ctx = document.getElementById(`chart-${plat}`).getContext('2d');
+    if (charts[plat]) charts[plat].destroy();
+    charts[plat] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          borderColor: PLAT_COLORS[plat].line,
+          backgroundColor: PLAT_COLORS[plat].fill,
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+          pointRadius: days <= 30 ? 3 : 0,
+          pointBackgroundColor: PLAT_COLORS[plat].line,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+        scales: {
+          x: { ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 }, maxRotation: 0, autoSkipPadding: 12 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 }, callback: v => fmt(v) }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+        }
+      }
+    });
+  });
+}
+
+document.getElementById('chart-controls').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  const days = parseInt(e.target.dataset.period, 10);
+  document.querySelectorAll('#chart-controls button').forEach(b => b.classList.toggle('active', b === e.target));
+  renderCharts(days);
+});
 </script>
 
 </body>

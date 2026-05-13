@@ -1,5 +1,6 @@
 # Live metrics — contains farm personas + numbers, keep local
 farm_metrics.json
+farm_history.json
 upload_post_metrics.json
 loudly_metrics.json
 metrics.json

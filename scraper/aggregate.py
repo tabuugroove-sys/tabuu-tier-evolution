@@ -33,6 +33,8 @@ def main():
         "shares": 0,
         "videos": 0,
     })
+    # daily views per platform (summed across all profiles)
+    daily = defaultdict(lambda: defaultdict(float))  # daily[plat][YYYY-MM-DD] = views
 
     by_profile = []
     for username, prof in (d.get("analytics") or {}).items():
@@ -64,6 +66,7 @@ def main():
                 try:
                     dt = datetime.date.fromisoformat(pt["date"])
                     val = pt.get("value", 0) or 0
+                    daily[plat][pt["date"]] += val
                     if dt >= cutoff_7:
                         v7 += val
                     if dt >= cutoff_30:
@@ -111,6 +114,27 @@ def main():
         "videos": sum(p["videos"] for p in by_platform.values()),
     }
 
+    # Build daily timeseries per platform as sorted [date, value] arrays
+    timeseries = {}
+    for plat, by_date in daily.items():
+        items = sorted(by_date.items())
+        timeseries[plat] = [{"date": dt, "value": int(v)} for dt, v in items]
+
+    # Merge into long-running history file (one snapshot per day per platform)
+    HISTORY = ROOT / "farm_history.json"
+    if HISTORY.exists():
+        hist = json.loads(HISTORY.read_text())
+    else:
+        hist = {"timeseries": {}}
+    for plat, series in timeseries.items():
+        h_series = {pt["date"]: pt["value"] for pt in hist["timeseries"].get(plat, [])}
+        for pt in series:
+            # API window keeps overwriting same dates — take max if a higher value appears
+            h_series[pt["date"]] = max(h_series.get(pt["date"], 0), pt["value"])
+        hist["timeseries"][plat] = [{"date": d, "value": v} for d, v in sorted(h_series.items())]
+    hist["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    HISTORY.write_text(json.dumps(hist, indent=2, ensure_ascii=False))
+
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "account": d.get("me", {}).get("email"),
@@ -120,10 +144,13 @@ def main():
         "top_profiles": by_profile[:10],
         "all_profiles": by_profile,
         "recent_posts": history_items,
+        "timeseries": hist["timeseries"],  # full long-running history
     }
 
     OUT.write_text(json.dumps(out, indent=2, ensure_ascii=False))
     print(f"[aggregate] Wrote {OUT}")
+    for plat, series in hist["timeseries"].items():
+        print(f"  {plat}: {len(series)} daily points")
     print(f"  Total: {totals['profiles']} profiles · "
           f"{totals['followers']} followers · "
           f"{totals['views_total']:,} views all-time · "
