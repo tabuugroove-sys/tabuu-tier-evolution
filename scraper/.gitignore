@@ -3,4 +3,6 @@ __pycache__/
 .venv/
 profile/
 *.json
+ditto_support_ticket.md
+youtube_support_letter.md
 

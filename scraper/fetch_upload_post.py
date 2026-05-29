@@ -101,10 +101,21 @@ def main():
     print(f"[upload-post] /uploadposts/users → HTTP {status}")
     out["users"] = users
 
-    # 3. History of uploads
-    status, history = call("/uploadposts/history", api_key, params={"limit": 50})
-    print(f"[upload-post] /uploadposts/history → HTTP {status}")
-    out["history"] = history
+    # 3. History of uploads — paginate up to 500 most recent
+    full_history = []
+    page = 1
+    while page <= 10:
+        status, history = call("/uploadposts/history", api_key, params={"limit": 50, "page": page})
+        if status != 200 or not isinstance(history, dict):
+            print(f"[upload-post] /uploadposts/history page={page} → HTTP {status} (stop)")
+            break
+        items = history.get("history") or []
+        full_history.extend(items)
+        print(f"[upload-post] /uploadposts/history page={page} → {len(items)} items (total {len(full_history)})")
+        if len(items) < 50:
+            break
+        page += 1
+    out["history"] = {"history": full_history, "total": len(full_history), "pages_fetched": page}
 
     # 4. Analytics per profile — extract username + connected platforms from /users
     profiles = []
