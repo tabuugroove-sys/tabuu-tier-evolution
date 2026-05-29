@@ -25,5 +25,20 @@ PROJECT_DIR="/Users/a1111/Downloads/tabuu-tier-evolution"
   /opt/homebrew/bin/python3 scraper/fetch_upload_post.py
   /opt/homebrew/bin/python3 scraper/aggregate.py
 
+  # Publish anonymized public metrics to GitHub Pages dashboard.
+  # Only farm_metrics_public.json is tracked; private files stay gitignored.
+  if ! git diff --quiet -- farm_metrics_public.json; then
+    git add farm_metrics_public.json
+    git -c user.name="TABUU farm bot" -c user.email="tabuugroove@gmail.com" \
+        commit -m "Auto-update public farm metrics ($(date +%Y-%m-%d))" -- farm_metrics_public.json
+    if git push origin main; then
+      echo "Pushed public metrics to GitHub Pages"
+    else
+      echo "WARN: git push failed (will retry next run)"
+    fi
+  else
+    echo "No change in public metrics — nothing to push"
+  fi
+
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Done"
 } >> "$LOG" 2>&1
