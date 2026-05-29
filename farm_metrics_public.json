@@ -1,41 +1,41 @@
 {
-  "updated_at": "2026-05-28T11:02:15.758223+00:00",
+  "updated_at": "2026-05-29T08:18:39.971728+00:00",
   "is_public": true,
   "totals": {
-    "followers": 330,
-    "views_total": 368925,
-    "views_7d": 86531,
-    "views_30d": 544049,
-    "likes": 7385,
-    "comments": 44,
-    "videos": 2204
+    "followers": 335,
+    "views_total": 345296,
+    "views_7d": 83891,
+    "views_30d": 505067,
+    "likes": 7238,
+    "comments": 41,
+    "videos": 2285
   },
   "by_platform": {
     "tiktok": {
-      "followers": 174,
-      "views_total": 74795,
-      "views_7d": 33942,
-      "views_30d": 268148,
-      "likes": 4161,
-      "comments": 20,
-      "videos": 2204
+      "followers": 177,
+      "views_total": 70481,
+      "views_7d": 32898,
+      "views_30d": 248447,
+      "likes": 4231,
+      "comments": 18,
+      "videos": 2285
     },
     "instagram": {
-      "followers": 30,
-      "views_total": 122038,
-      "views_7d": 19008,
-      "views_30d": 103809,
-      "likes": 1774,
-      "comments": 7,
+      "followers": 32,
+      "views_total": 122103,
+      "views_7d": 17939,
+      "views_30d": 103908,
+      "likes": 1763,
+      "comments": 8,
       "videos": 0
     },
     "youtube": {
       "followers": 126,
-      "views_total": 172092,
-      "views_7d": 33581,
-      "views_30d": 172092,
-      "likes": 1450,
-      "comments": 17,
+      "views_total": 152712,
+      "views_7d": 33054,
+      "views_30d": 152712,
+      "likes": 1244,
+      "comments": 15,
       "videos": 0
     }
   },
@@ -219,6 +219,10 @@
       },
       {
         "date": "2026-05-28",
+        "value": 2261
+      },
+      {
+        "date": "2026-05-29",
         "value": 0
       }
     ],
@@ -397,7 +401,11 @@
       },
       {
         "date": "2026-05-28",
-        "value": 416
+        "value": 2756
+      },
+      {
+        "date": "2026-05-29",
+        "value": 111
       }
     ],
     "youtube": [
@@ -571,7 +579,7 @@
       },
       {
         "date": "2026-05-26",
-        "value": 0
+        "value": 1326
       },
       {
         "date": "2026-05-27",
@@ -579,6 +587,10 @@
       },
       {
         "date": "2026-05-28",
+        "value": 0
+      },
+      {
+        "date": "2026-05-29",
         "value": 0
       }
     ]
