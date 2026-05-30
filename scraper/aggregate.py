@@ -135,6 +135,36 @@ def main():
     hist["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     HISTORY.write_text(json.dumps(hist, indent=2, ensure_ascii=False))
 
+    # ── Reach windows recomputed from accumulated daily history ──────────
+    # Source of truth = farm_history.json (max value per date, every day since
+    # tracking began). This guarantees 7d <= 30d <= total and that "total"
+    # only ever grows. The raw API `impressions` field is a rolling ~30-day
+    # window and must NOT be summed and labelled "all-time" (that produced the
+    # bug where all-time < 30d and the number shrank daily).
+    tracking_starts = []
+    for plat, series in hist["timeseries"].items():
+        if series:
+            tracking_starts.append(series[0]["date"])
+        s7 = s30 = sall = 0
+        for pt in series:
+            dt = datetime.date.fromisoformat(pt["date"])
+            v = pt["value"]
+            sall += v
+            if dt >= cutoff_30:
+                s30 += v
+            if dt >= cutoff_7:
+                s7 += v
+        by_platform[plat]["views_7d"] = int(s7)
+        by_platform[plat]["views_30d"] = int(s30)
+        by_platform[plat]["views_total"] = int(sall)
+    tracking_since = min(tracking_starts) if tracking_starts else None
+
+    # Rebuild reach figures in totals from the corrected per-platform values.
+    totals["views_7d"] = sum(p["views_7d"] for p in by_platform.values())
+    totals["views_30d"] = sum(p["views_30d"] for p in by_platform.values())
+    totals["views_total"] = sum(p["views_total"] for p in by_platform.values())
+    totals["tracking_since"] = tracking_since
+
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "account": d.get("me", {}).get("email"),
@@ -168,6 +198,7 @@ def main():
             "likes": int(totals["likes"]),
             "comments": int(totals["comments"]),
             "videos": int(totals["videos"]),
+            "tracking_since": totals.get("tracking_since"),
         },
         "by_platform": {
             plat: {

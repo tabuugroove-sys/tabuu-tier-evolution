@@ -1,39 +1,40 @@
 {
-  "updated_at": "2026-05-29T08:18:39.971728+00:00",
+  "updated_at": "2026-05-30T00:03:53.701950+00:00",
   "is_public": true,
   "totals": {
-    "followers": 335,
-    "views_total": 345296,
-    "views_7d": 83891,
-    "views_30d": 505067,
-    "likes": 7238,
-    "comments": 41,
-    "videos": 2285
+    "followers": 334,
+    "views_total": 705820,
+    "views_7d": 84431,
+    "views_30d": 582306,
+    "likes": 7246,
+    "comments": 42,
+    "videos": 2285,
+    "tracking_since": "2026-04-14"
   },
   "by_platform": {
     "tiktok": {
-      "followers": 177,
-      "views_total": 70481,
+      "followers": 176,
+      "views_total": 293436,
       "views_7d": 32898,
-      "views_30d": 248447,
-      "likes": 4231,
-      "comments": 18,
+      "views_30d": 293436,
+      "likes": 4237,
+      "comments": 19,
       "videos": 2285
     },
     "instagram": {
       "followers": 32,
-      "views_total": 122103,
-      "views_7d": 17939,
-      "views_30d": 103908,
-      "likes": 1763,
+      "views_total": 160803,
+      "views_7d": 18475,
+      "views_30d": 115428,
+      "likes": 1765,
       "comments": 8,
       "videos": 0
     },
     "youtube": {
       "followers": 126,
-      "views_total": 152712,
-      "views_7d": 33054,
-      "views_30d": 152712,
+      "views_total": 251581,
+      "views_7d": 33058,
+      "views_30d": 173442,
       "likes": 1244,
       "comments": 15,
       "videos": 0
@@ -401,11 +402,11 @@
       },
       {
         "date": "2026-05-28",
-        "value": 2756
+        "value": 2759
       },
       {
         "date": "2026-05-29",
-        "value": 111
+        "value": 516
       }
     ],
     "youtube": [

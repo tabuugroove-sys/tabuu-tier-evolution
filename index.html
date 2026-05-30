@@ -530,9 +530,9 @@ function renderCoverFarm(d) {
       <div class="kpi-sub">${fmt(t.views_30d)} last 30d</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Views (all-time)</div>
+      <div class="kpi-label">Total reach</div>
       <div class="kpi-value">${fmt(t.views_total)}</div>
-      <div class="kpi-sub">${fmt(t.likes)} likes · ${fmt(t.comments)} comments</div>
+      <div class="kpi-sub">${t.tracking_since ? 'since ' + new Date(t.tracking_since + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'all platforms'} · ${fmt(t.likes)} likes</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Followers</div>
@@ -567,7 +567,7 @@ function renderCoverFarm(d) {
   document.getElementById('cover-platforms').innerHTML = `
     <table class="platform-table">
       <thead><tr>
-        <th>Platform</th>${isPublic ? '' : '<th>Profiles</th>'}<th>Followers</th><th>Views total</th><th>Views 7d</th><th>Likes</th><th>Comments</th>
+        <th>Platform</th>${isPublic ? '' : '<th>Profiles</th>'}<th>Followers</th><th>Reach (all)</th><th>Reach (7d)</th><th>Likes</th><th>Comments</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
