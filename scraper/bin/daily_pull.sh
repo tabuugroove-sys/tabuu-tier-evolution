@@ -32,14 +32,18 @@ PROJECT_DIR="/Users/a1111/Downloads/tabuu-tier-evolution"
 
   # Publish anonymized public metrics to GitHub Pages dashboard.
   # Only farm_metrics_public.json is tracked; private files stay gitignored.
-  if ! git diff --quiet -- farm_metrics_public.json; then
-    git add farm_metrics_public.json
+  PUBLIC_FILES=""
+  for f in farm_metrics_public.json royalties.json; do
+    git diff --quiet -- "$f" 2>/dev/null || PUBLIC_FILES="$PUBLIC_FILES $f"
+  done
+  if [ -n "$PUBLIC_FILES" ]; then
+    git add $PUBLIC_FILES
     if git -c user.name="TABUU farm bot" -c user.email="tabuugroove@gmail.com" \
-         commit -m "Auto-update public farm metrics ($(date +%Y-%m-%d))" -- farm_metrics_public.json; then
+         commit -m "Auto-update public metrics ($(date +%Y-%m-%d))" -- $PUBLIC_FILES; then
       # Reconcile with remote first so a non-fast-forward can't wedge the push.
       git pull --rebase origin main || { git rebase --abort 2>/dev/null; true; }
       if git push origin main; then
-        echo "Pushed public metrics to GitHub Pages"
+        echo "Pushed to GitHub Pages:$PUBLIC_FILES"
       else
         echo "WARN: git push failed (will retry next run)"
       fi
@@ -47,7 +51,7 @@ PROJECT_DIR="/Users/a1111/Downloads/tabuu-tier-evolution"
       echo "WARN: commit failed — skipping push this run"
     fi
   else
-    echo "No change in public metrics — nothing to push"
+    echo "No change in public files — nothing to push"
   fi
 
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Done"

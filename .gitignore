@@ -10,8 +10,9 @@ metrics.json
 # (no profile names, no handles, no post URLs — only aggregate numbers + timeseries)
 !farm_metrics_public.json
 
-# Royalty monitor — contains royalty $ amounts + claim drafts — keep local
-royalties.json
+# Royalty monitor.
+# royalties.json IS published (user opted to make royalty data fully public).
+# Raw scrape input + standalone claim files stay local.
 royalties_raw.json
 claims/
 scraper/ditto_reports/

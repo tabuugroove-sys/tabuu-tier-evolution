@@ -1,0 +1,202 @@
+{
+  "updated_at": "2026-05-31T01:40:35.539154+00:00",
+  "scraped_at": "2026-05-30T12:00:00Z",
+  "is_stale": false,
+  "currency": "USD",
+  "totals": {
+    "currency": "USD",
+    "lifetime_royalty": 0.82,
+    "cid_royalty_lifetime": 0.12,
+    "yt_music_royalty_lifetime": 0.67,
+    "total_streams": 5232,
+    "yt_matched_28d": 12683,
+    "reporting_through": "2026-02",
+    "reporting_lag_note": "Ditto shows sales only up to February as of late May — ~3 month lag"
+  },
+  "by_status": {
+    "ok_earning": 4,
+    "yt_not_matching": 1,
+    "cid_disabled": 7
+  },
+  "releases": [
+    {
+      "title": "Soñamos",
+      "isrc": null,
+      "cid_status": "active",
+      "yt_matched_views": null,
+      "royalty_total": null,
+      "farm_used": true,
+      "status": "ok_earning",
+      "claim_type": null
+    },
+    {
+      "title": "Love Your Move",
+      "isrc": null,
+      "cid_status": "active",
+      "yt_matched_views": null,
+      "royalty_total": null,
+      "farm_used": true,
+      "status": "ok_earning",
+      "claim_type": null
+    },
+    {
+      "title": "Fora Do Tempo",
+      "isrc": null,
+      "cid_status": "active",
+      "yt_matched_views": null,
+      "royalty_total": null,
+      "farm_used": true,
+      "status": "ok_earning",
+      "claim_type": null
+    },
+    {
+      "title": "Todos os Nossos Momentos (Radio Edit)",
+      "isrc": null,
+      "cid_status": "active",
+      "yt_matched_views": null,
+      "royalty_total": null,
+      "farm_used": true,
+      "status": "ok_earning",
+      "claim_type": null
+    },
+    {
+      "title": "Primeira Classe",
+      "isrc": "GXJBJ2637569",
+      "release_id": "5069742",
+      "cid_status": "active_no_match",
+      "streams_other": 1541,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "yt_not_matching",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Primeira Classe (Extended Version)",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": null,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Love Your Move (Radio Edit)",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": 389,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Único Momento",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": 36,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Nossos Momentos",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": 24,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Me Prende",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": 16,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "PRADA",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": 10,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    },
+    {
+      "title": "Mas que nada",
+      "isrc": null,
+      "cid_status": "disabled",
+      "streams_other": null,
+      "yt_matched_views": 0,
+      "royalty_total": 0,
+      "farm_used": true,
+      "status": "cid_disabled",
+      "claim_type": "ditto_enable_cid"
+    }
+  ],
+  "claims": [
+    {
+      "claim_type": "ditto_enable_cid",
+      "template": "ditto_enable_cid",
+      "slug": "ditto-enable-cid",
+      "target": "ditto",
+      "releases": [
+        "Primeira Classe",
+        "Primeira Classe (Extended Version)",
+        "Love Your Move (Radio Edit)",
+        "Único Momento",
+        "Nossos Momentos",
+        "Me Prende",
+        "PRADA",
+        "Mas que nada"
+      ],
+      "count": 8,
+      "body": "**To:** support@dittomusic.com\n**From:** tabuugroove@gmail.com\n**Subject:** Enable YouTube Content ID + deliver reference for 8 TABUU releases (auto-detected gap)\n\nHi Ditto team,\n\nI run the artist **TABUU** (account: tabuugroove@gmail.com, YouTube artist channel UCmdGxtoDiohwZXgw7OO0vSQ).\n\nYouTube Content ID is confirmed working on several of my releases — Artist Analytics shows third-party Shorts being matched and credited. However, the 8 releases below receive third-party / short-form usage but have **zero Content ID matches**, which means their audio reference is either not enabled or never reached YouTube CMS.\n\nReleases needing Content ID enabled + reference delivered:\n\n- **Primeira Classe** (ISRC GXJBJ2637569) — 1541 streams on other stores, 0 matched views on YouTube\n- **Primeira Classe (Extended Version)** (ISRC —) — 0 streams on other stores, 0 matched views on YouTube\n- **Love Your Move (Radio Edit)** (ISRC —) — 389 streams on other stores, 0 matched views on YouTube\n- **Único Momento** (ISRC —) — 36 streams on other stores, 0 matched views on YouTube\n- **Nossos Momentos** (ISRC —) — 24 streams on other stores, 0 matched views on YouTube\n- **Me Prende** (ISRC —) — 16 streams on other stores, 0 matched views on YouTube\n- **PRADA** (ISRC —) — 10 streams on other stores, 0 matched views on YouTube\n- **Mas que nada** (ISRC —) — 0 streams on other stores, 0 matched views on YouTube\n\n\nWhat I'm asking:\n1. **Enable YouTube Content ID & Shorts** on each release above.\n2. **Deliver the audio reference to YouTube CMS** so fingerprint matching can start.\n3. **Confirm reference-delivery status** (delivered yes/no + date) — \"Active\" in your UI only tells me the service is on, not that the reference reached YouTube.\n4. Confirm expected backfill timeline for already-uploaded third-party videos.\n\nSource audio files are already in your system from the original releases; happy to re-supply if needed.\n\nThanks,\nTABUU\ntabuugroove@gmail.com\n\n---\n*Auto-drafted by the royalty monitor on 2026-05-30 from detected CID gaps. Review before sending.*\n"
+    },
+    {
+      "claim_type": "ditto_enable_cid",
+      "template": "youtube_attribution",
+      "slug": "youtube-attribution",
+      "target": "youtube",
+      "releases": [
+        "Primeira Classe",
+        "Primeira Classe (Extended Version)",
+        "Love Your Move (Radio Edit)",
+        "Único Momento",
+        "Nossos Momentos",
+        "Me Prende",
+        "PRADA",
+        "Mas que nada"
+      ],
+      "count": 8,
+      "body": "**Submit via:** https://support.google.com/youtube/contact/music (Artist channels & monetization → Content ID / monetization issue)\n**Channel:** UCmdGxtoDiohwZXgw7OO0vSQ (TABUU — Official Artist Channel a_WFbG5pO79yh)\n\n**Subject:** Content ID not attributing 8 TABUU releases despite third-party usage\n\nHello YouTube Music team,\n\nI'm the artist behind the Official Artist Channel **TABUU** (channel UCmdGxtoDiohwZXgw7OO0vSQ, artist ID a_WFbG5pO79yh). My distributor is **Ditto Music** (I've opened a parallel ticket with them).\n\nContent ID is matching and crediting some of my releases correctly. But the 8 releases below receive third-party short-form usage and show **zero Content ID matches** / no attribution to my artist channel:\n\n- **Primeira Classe** (ISRC GXJBJ2637569) — 1541 streams elsewhere, 0 matched views here\n- **Primeira Classe (Extended Version)** (ISRC —) — 0 streams elsewhere, 0 matched views here\n- **Love Your Move (Radio Edit)** (ISRC —) — 389 streams elsewhere, 0 matched views here\n- **Único Momento** (ISRC —) — 36 streams elsewhere, 0 matched views here\n- **Nossos Momentos** (ISRC —) — 24 streams elsewhere, 0 matched views here\n- **Me Prende** (ISRC —) — 16 streams elsewhere, 0 matched views here\n- **PRADA** (ISRC —) — 10 streams elsewhere, 0 matched views here\n- **Mas que nada** (ISRC —) — 0 streams elsewhere, 0 matched views here\n\n\nCould you please:\n1. Confirm whether reference fingerprints for these releases were ever received from Ditto Music for artist a_WFbG5pO79yh.\n2. If received — investigate why they aren't matching obvious third-party Shorts using the same audio (sample URLs on request).\n3. If not received — notify Ditto so they can re-deliver. This cross-vendor gap is something I can't resolve from either side alone.\n\nHappy to provide source audio, ISRCs, and sample third-party video URLs.\n\nThank you,\nTABUU\ntabuugroove@gmail.com\n\n---\n*Auto-drafted by the royalty monitor on 2026-05-30. Parallel to the Ditto ticket — sending both creates documented pressure. Review before sending.*\n"
+    }
+  ],
+  "sources": {
+    "youtube_channel_id": "UCmdGxtoDiohwZXgw7OO0vSQ",
+    "youtube_artist_id": "a_WFbG5pO79yh",
+    "ditto_account": "tabuugroove@gmail.com",
+    "ditto_sales_url": "https://dashboard.dittomusic.com/sales-area/sales"
+  },
+  "royalty_periods": [],
+  "method": {
+    "royalty_lag_days": 75,
+    "rules": "deterministic; see classify() in royalty_monitor.py",
+    "no_llm": true
+  }
+}
