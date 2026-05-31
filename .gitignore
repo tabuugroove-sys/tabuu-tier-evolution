@@ -9,3 +9,9 @@ metrics.json
 # farm_metrics_public.json IS committed — it's the anonymized public version
 # (no profile names, no handles, no post URLs — only aggregate numbers + timeseries)
 !farm_metrics_public.json
+
+# Royalty monitor — contains royalty $ amounts + claim drafts — keep local
+royalties.json
+royalties_raw.json
+claims/
+scraper/ditto_reports/

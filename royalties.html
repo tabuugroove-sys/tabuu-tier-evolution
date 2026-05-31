@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TABUU · Royalty Monitor</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  body { background:#0a0a12; color:#fff; padding:30px 20px; min-height:100vh; max-width:1100px; margin:0 auto; }
+  a { color:#4a9eff; text-decoration:none; }
+  h1 { font-size:26px; font-weight:800; letter-spacing:0.5px; }
+  .sub { color:rgba(255,255,255,0.45); font-size:13px; margin-top:4px; }
+  .top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px; flex-wrap:wrap; gap:10px; }
+  .updated { color:rgba(255,255,255,0.4); font-size:12px; margin:6px 0 22px; }
+  .banner { background:rgba(255,165,0,0.08); border:1px solid rgba(255,165,0,0.3); border-radius:10px; padding:12px 16px; font-size:13px; margin-bottom:22px; color:#ffd54a; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px; }
+  .kpi { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px 20px; }
+  .kpi-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.5); margin-bottom:8px; }
+  .kpi-value { font-size:26px; font-weight:700; line-height:1; }
+  .kpi-sub { font-size:12px; color:rgba(255,255,255,0.4); margin-top:7px; }
+  .kpi.warn .kpi-value { color:#ff7a5c; }
+  .section-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color:#ffd54a; margin:30px 0 14px; font-weight:700; }
+  table { width:100%; border-collapse:collapse; background:rgba(255,255,255,0.02); border-radius:10px; overflow:hidden; font-size:13px; }
+  th { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.6); font-size:11px; text-transform:uppercase; letter-spacing:1px; font-weight:600; padding:11px 12px; text-align:left; }
+  td { padding:11px 12px; border-top:1px solid rgba(255,255,255,0.05); }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+  .b-ok_earning { background:rgba(127,226,127,0.15); color:#7fe27f; }
+  .b-waiting_royalty { background:rgba(74,158,255,0.15); color:#7bb8ff; }
+  .b-royalty_missing { background:rgba(255,90,90,0.18); color:#ff8a8a; }
+  .b-yt_not_matching { background:rgba(255,165,0,0.18); color:#ffc14a; }
+  .b-cid_disabled { background:rgba(255,90,90,0.18); color:#ff8a8a; }
+  .b-no_usage { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); }
+  .claim { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:16px; overflow:hidden; }
+  .claim-head { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; cursor:pointer; gap:12px; }
+  .claim-head:hover { background:rgba(255,255,255,0.02); }
+  .claim-title { font-weight:700; font-size:14px; }
+  .claim-meta { font-size:12px; color:rgba(255,255,255,0.45); margin-top:3px; }
+  .tag { font-size:10px; text-transform:uppercase; letter-spacing:1px; padding:3px 8px; border-radius:6px; font-weight:700; }
+  .tag-ditto { background:rgba(74,158,255,0.15); color:#7bb8ff; }
+  .tag-youtube { background:rgba(255,90,90,0.15); color:#ff8a8a; }
+  .claim-body { display:none; border-top:1px solid rgba(255,255,255,0.08); }
+  .claim-body pre { white-space:pre-wrap; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; line-height:1.55; padding:18px; color:rgba(255,255,255,0.85); }
+  .claim-actions { padding:0 18px 16px; display:flex; gap:10px; flex-wrap:wrap; }
+  button.act { background:#ffd54a; color:#0a0a12; border:none; border-radius:8px; padding:9px 16px; font-weight:700; font-size:13px; cursor:pointer; }
+  button.act.ghost { background:rgba(255,255,255,0.07); color:#fff; }
+  .foot { color:rgba(255,255,255,0.35); font-size:11px; line-height:1.6; margin-top:36px; border-top:1px solid rgba(255,255,255,0.07); padding-top:16px; }
+  .empty { background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.15); border-radius:12px; padding:40px; text-align:center; color:rgba(255,255,255,0.5); }
+  @media(max-width:720px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h1>💰 Royalty Monitor</h1>
+      <div class="sub">Track-level CID status · expected vs paid royalty · auto-drafted claims · <a href="index.html">← dashboard</a></div>
+    </div>
+  </div>
+  <div class="updated" id="updated">Loading…</div>
+  <div id="root"></div>
+  <div class="foot" id="foot"></div>
+
+<script>
+const fmtMoney = (v,c) => (c==='BRL'?'R$':'$') + (Number(v)||0).toFixed(2);
+const fmt = v => { v=Number(v)||0; return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(1)+'k':String(v); };
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const STATUS_LABEL = {
+  ok_earning:'Earning', waiting_royalty:'Waiting (in lag)', royalty_missing:'Royalty missing',
+  yt_not_matching:'YT not matching', cid_disabled:'CID off', no_usage:'No usage'
+};
+const ago = iso => { if(!iso) return 'never'; const s=(Date.now()-new Date(iso))/1000;
+  const d=Math.floor(s/86400), h=Math.floor(s/3600); return d>0?d+'d ago':h>0?h+'h ago':'just now'; };
+
+function render(d){
+  const t = d.totals || {}, c = d.currency || 'BRL';
+  document.getElementById('updated').innerHTML =
+    `Computed ${ago(d.updated_at)} · scraped ${ago(d.scraped_at)} · source: Ditto Sales + YouTube Artist Analytics (browser-scraped)`;
+
+  const gaps = (d.releases||[]).filter(r => r.claim_type).length;
+  let html = '';
+  if (d.is_stale)
+    html += `<div class="banner">⚠ No scrape yet — numbers below are seeded/known values. Run a Ditto + YouTube scrape to refresh.</div>`;
+
+  html += `<div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Lifetime royalty</div><div class="kpi-value">${fmtMoney(t.lifetime_royalty,c)}</div><div class="kpi-sub">all stores, all time</div></div>
+    <div class="kpi"><div class="kpi-label">YouTube CID royalty</div><div class="kpi-value">${fmtMoney(t.cid_royalty_lifetime,c)}</div><div class="kpi-sub">lifetime, content ID only</div></div>
+    <div class="kpi"><div class="kpi-label">Matched views (28d)</div><div class="kpi-value">${fmt(t.yt_matched_28d)}</div><div class="kpi-sub">credited on artist channel</div></div>
+    <div class="kpi ${gaps?'warn':''}"><div class="kpi-label">Releases with gaps</div><div class="kpi-value">${gaps}</div><div class="kpi-sub">of ${(d.releases||[]).length} releases</div></div>
+  </div>`;
+
+  // Releases table
+  html += `<div class="section-title">Releases · CID & royalty status</div>`;
+  if ((d.releases||[]).length){
+    html += `<table><thead><tr><th>Release</th><th>ISRC</th><th>CID</th><th class="num">Matched views</th><th class="num">Royalty</th><th>Status</th></tr></thead><tbody>`;
+    for (const r of d.releases){
+      html += `<tr>
+        <td><strong>${esc(r.title)}</strong></td>
+        <td style="color:rgba(255,255,255,0.45)">${esc(r.isrc||'—')}</td>
+        <td>${esc(r.cid_status||'?')}</td>
+        <td class="num">${r.yt_matched_views==null?'—':fmt(r.yt_matched_views)}</td>
+        <td class="num">${r.royalty_total==null?'—':fmtMoney(r.royalty_total,c)}</td>
+        <td><span class="badge b-${r.status}">${STATUS_LABEL[r.status]||r.status}</span></td>
+      </tr>`;
+    }
+    html += `</tbody></table>`;
+  } else html += `<div class="empty">No release data yet.</div>`;
+
+  // Claims
+  html += `<div class="section-title">Auto-drafted claims (${(d.claims||[]).length})</div>`;
+  if ((d.claims||[]).length){
+    d.claims.forEach((cl,i) => {
+      const subj = (cl.body.match(/Subject:\s*\*\*?(.+)/i) || cl.body.match(/\*\*Subject:\*\*\s*(.+)/i) || [,''])[1] || cl.template;
+      const mailto = cl.target==='ditto'
+        ? `mailto:support@dittomusic.com?subject=${encodeURIComponent(subj.replace(/\*/g,'').trim())}&body=${encodeURIComponent(cl.body)}`
+        : 'https://support.google.com/youtube/contact/music';
+      html += `<div class="claim">
+        <div class="claim-head" onclick="this.parentElement.querySelector('.claim-body').style.display = this.parentElement.querySelector('.claim-body').style.display==='block'?'none':'block'">
+          <div>
+            <div class="claim-title">${cl.target==='ditto'?'📧 Ditto':'▶ YouTube'} — ${esc(cl.template.replace(/_/g,' '))}</div>
+            <div class="claim-meta">${cl.count} release(s): ${esc(cl.releases.join(', '))}</div>
+          </div>
+          <span class="tag ${cl.target==='ditto'?'tag-ditto':'tag-youtube'}">${cl.target}</span>
+        </div>
+        <div class="claim-body">
+          <pre id="cb${i}">${esc(cl.body)}</pre>
+          <div class="claim-actions">
+            <button class="act" onclick="navigator.clipboard.writeText(document.getElementById('cb${i}').innerText); this.textContent='Copied ✓'">Copy text</button>
+            <a class="act ghost" href="${esc(mailto)}" ${cl.target==='ditto'?'':'target="_blank"'}>${cl.target==='ditto'?'Open email draft':'Open YouTube form'}</a>
+          </div>
+        </div>
+      </div>`;
+    });
+  } else html += `<div class="empty">No gaps detected — nothing to claim. 🎉</div>`;
+
+  document.getElementById('root').innerHTML = html;
+  const m = d.method || {};
+  document.getElementById('foot').innerHTML =
+    `Detection is fully deterministic (no LLM): royalty lag window = ${m.royalty_lag_days||75} days; rules in <code>scraper/royalty_monitor.py</code>. ` +
+    `Claims are template-filled from <code>scraper/claim_templates/</code> — review before sending. ` +
+    `Data is local-only (gitignored); this page shows nothing when hosted publicly.`;
+}
+
+fetch('royalties.json?cb=' + Date.now())
+  .then(r => { if(!r.ok) throw 0; return r.json(); })
+  .then(render)
+  .catch(() => {
+    document.getElementById('updated').textContent = '';
+    document.getElementById('root').innerHTML =
+      `<div class="empty">No <code>royalties.json</code> found.<br><br>This page is local-only. Run <code>python3 scraper/royalty_monitor.py</code> after a scrape to generate it.</div>`;
+  });
+</script>
+</body>
+</html>

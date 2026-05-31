@@ -25,6 +25,11 @@ PROJECT_DIR="/Users/a1111/Downloads/tabuu-tier-evolution"
   /opt/homebrew/bin/python3 scraper/fetch_upload_post.py
   /opt/homebrew/bin/python3 scraper/aggregate.py
 
+  # Royalty monitor: deterministic recompute of claim drafts / statuses from
+  # the last-scraped royalties_raw.json (no network, no LLM). Raw data itself
+  # is refreshed out-of-band by a browser scrape (Ditto + YouTube are login-only).
+  /opt/homebrew/bin/python3 scraper/royalty_monitor.py || echo "WARN: royalty_monitor failed"
+
   # Publish anonymized public metrics to GitHub Pages dashboard.
   # Only farm_metrics_public.json is tracked; private files stay gitignored.
   if ! git diff --quiet -- farm_metrics_public.json; then
