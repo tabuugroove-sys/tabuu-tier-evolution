@@ -135,6 +135,17 @@ def main():
     hist["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     HISTORY.write_text(json.dumps(hist, indent=2, ensure_ascii=False))
 
+    # Snapshot the raw per-platform figures from THIS pull *before* we override
+    # them with history-based values — kept for the provenance / cross-check
+    # block so anyone can see the published number next to its raw source.
+    current_pull = {
+        plat: {
+            "reach_30d_this_pull_raw": int(s.get("views_30d", 0)),
+            "api_impressions_field_raw": int(s.get("views_total", 0)),
+        }
+        for plat, s in by_platform.items()
+    }
+
     # ── Reach windows recomputed from accumulated daily history ──────────
     # Source of truth = farm_history.json (max value per date, every day since
     # tracking began). This guarantees 7d <= 30d <= total and that "total"
@@ -159,11 +170,67 @@ def main():
         by_platform[plat]["views_total"] = int(sall)
     tracking_since = min(tracking_starts) if tracking_starts else None
 
+    # Guard: a platform with profiles but no daily history must not keep a
+    # stale impressions-based number (that would silently re-mix metrics and
+    # could break the invariant below).
+    history_plats = set(hist["timeseries"].keys())
+    for plat in by_platform:
+        if plat not in history_plats:
+            by_platform[plat]["views_7d"] = 0
+            by_platform[plat]["views_30d"] = 0
+            by_platform[plat]["views_total"] = 0
+
     # Rebuild reach figures in totals from the corrected per-platform values.
     totals["views_7d"] = sum(p["views_7d"] for p in by_platform.values())
     totals["views_30d"] = sum(p["views_30d"] for p in by_platform.values())
     totals["views_total"] = sum(p["views_total"] for p in by_platform.values())
     totals["tracking_since"] = tracking_since
+
+    # Hard invariant tripwire — refuse to publish numbers that cannot be true.
+    # (7d window ⊆ 30d window ⊆ all dates, and every reach value is >= 0.)
+    if not (totals["views_7d"] <= totals["views_30d"] <= totals["views_total"]):
+        raise RuntimeError(
+            "Reach invariant violated — refusing to publish: "
+            f"7d={totals['views_7d']:,} 30d={totals['views_30d']:,} "
+            f"total={totals['views_total']:,}"
+        )
+
+    # ── Provenance / proof block (non-sensitive — shipped in the public JSON) ──
+    provenance = {
+        "source": "Upload-Post API (api.upload-post.com)",
+        "cross_check_dashboard": "https://app.upload-post.com",
+        "endpoints": [
+            "GET /uploadposts/users",
+            "GET /analytics/{profile}?platforms=tiktok,instagram,youtube",
+            "GET /uploadposts/history",
+        ],
+        "raw_pulled_at": d.get("scraped_at"),
+        "pull_schedule": "daily 08:00 (LaunchAgent com.tabuu.farm-metrics)",
+        "tracking_since": tracking_since,
+        "method": {
+            "reach_daily": "per-platform daily reach = sum across all profiles of the API reach_timeseries value for that date",
+            "history": "farm_history.json keeps the MAX value ever seen per (platform, date) across all daily pulls, so the API's rolling 30d window cannot erase older days",
+            "reach_7d": "sum of daily reach for dates >= today-7",
+            "reach_30d": "sum of daily reach for dates >= today-30",
+            "reach_total": "sum of all daily reach since tracking_since",
+            "followers_likes_comments": "current snapshot from the API analytics window (not cumulative)",
+        },
+        "invariant": "reach_7d <= reach_30d <= reach_total — checked every run; the build fails if violated",
+        "invariant_passed": True,
+    }
+    verification = {
+        "note": "published reach (history-based) shown next to the raw single-pull values it is derived from, per platform",
+        "per_platform": {
+            plat: {
+                "reach_7d_published": by_platform[plat]["views_7d"],
+                "reach_30d_published": by_platform[plat]["views_30d"],
+                "reach_total_published": by_platform[plat]["views_total"],
+                "reach_30d_this_pull_raw": current_pull.get(plat, {}).get("reach_30d_this_pull_raw"),
+                "api_impressions_field_raw": current_pull.get(plat, {}).get("api_impressions_field_raw"),
+            }
+            for plat in by_platform
+        },
+    }
 
     out = {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -175,6 +242,8 @@ def main():
         "all_profiles": by_profile,
         "recent_posts": history_items,
         "timeseries": hist["timeseries"],  # full long-running history
+        "provenance": provenance,
+        "verification": verification,
     }
 
     OUT.write_text(json.dumps(out, indent=2, ensure_ascii=False))
@@ -213,6 +282,8 @@ def main():
             for plat, s in by_platform.items()
         },
         "timeseries": hist["timeseries"],
+        "provenance": provenance,
+        "verification": verification,
     }
     PUBLIC_OUT = ROOT / "farm_metrics_public.json"
     PUBLIC_OUT.write_text(json.dumps(public, indent=2, ensure_ascii=False))

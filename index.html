@@ -517,9 +517,29 @@ async function loadCoverFarm() {
 
 function renderCoverFarm(d) {
   const isPublic = !!d.is_public;
-  document.getElementById('cover-updated').textContent = isPublic
-    ? `Updated ${fmtDate(d.updated_at)} · aggregate distribution stats`
-    : `Updated ${fmtDate(d.updated_at)} · ${d.account || ''} · plan ${d.plan || ''}`;
+  const prov = d.provenance || {};
+  const m = prov.method || {};
+  const methodTip = [
+    'HOW THESE NUMBERS ARE COMPUTED',
+    '• reach (daily): ' + (m.reach_daily || ''),
+    '• 7d: ' + (m.reach_7d || ''),
+    '• 30d: ' + (m.reach_30d || ''),
+    '• total: ' + (m.reach_total || ''),
+    '• history: ' + (m.history || ''),
+    '• followers/likes/comments: ' + (m.followers_likes_comments || ''),
+    '',
+    'Invariant: ' + (prov.invariant || ''),
+    prov.raw_pulled_at ? 'Raw pull: ' + prov.raw_pulled_at : '',
+  ].filter(Boolean).join('\n');
+  const srcBits = isPublic
+    ? 'aggregate distribution stats'
+    : `${d.account || ''} · plan ${d.plan || ''}`;
+  document.getElementById('cover-updated').innerHTML =
+    `Updated ${fmtDate(d.updated_at)} · ${srcBits}`
+    + (prov.source
+        ? ` · <span style="cursor:help;text-decoration:underline dotted;text-underline-offset:3px"`
+          + ` title="${methodTip.replace(/"/g, '&quot;')}">source: ${prov.source} &#9432;</span>`
+        : '');
 
   // KPIs
   const t = d.totals;

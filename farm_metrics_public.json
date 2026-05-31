@@ -1,42 +1,42 @@
 {
-  "updated_at": "2026-05-30T00:03:53.701950+00:00",
+  "updated_at": "2026-05-31T00:22:57.910645+00:00",
   "is_public": true,
   "totals": {
-    "followers": 334,
-    "views_total": 705820,
-    "views_7d": 84431,
-    "views_30d": 582306,
-    "likes": 7246,
-    "comments": 42,
-    "videos": 2285,
+    "followers": 336,
+    "views_total": 710089,
+    "views_7d": 80356,
+    "views_30d": 538762,
+    "likes": 6943,
+    "comments": 35,
+    "videos": 2351,
     "tracking_since": "2026-04-14"
   },
   "by_platform": {
     "tiktok": {
-      "followers": 176,
-      "views_total": 293436,
-      "views_7d": 32898,
-      "views_30d": 293436,
-      "likes": 4237,
-      "comments": 19,
-      "videos": 2285
+      "followers": 178,
+      "views_total": 294185,
+      "views_7d": 30569,
+      "views_30d": 271158,
+      "likes": 4323,
+      "comments": 17,
+      "videos": 2351
     },
     "instagram": {
       "followers": 32,
-      "views_total": 160803,
-      "views_7d": 18475,
-      "views_30d": 115428,
-      "likes": 1765,
+      "views_total": 164243,
+      "views_7d": 19281,
+      "views_30d": 114788,
+      "likes": 1759,
       "comments": 8,
       "videos": 0
     },
     "youtube": {
       "followers": 126,
-      "views_total": 251581,
-      "views_7d": 33058,
-      "views_30d": 173442,
-      "likes": 1244,
-      "comments": 15,
+      "views_total": 251661,
+      "views_7d": 30506,
+      "views_30d": 152816,
+      "likes": 861,
+      "comments": 10,
       "videos": 0
     }
   },
@@ -224,6 +224,10 @@
       },
       {
         "date": "2026-05-29",
+        "value": 749
+      },
+      {
+        "date": "2026-05-30",
         "value": 0
       }
     ],
@@ -402,11 +406,15 @@
       },
       {
         "date": "2026-05-28",
-        "value": 2759
+        "value": 2762
       },
       {
         "date": "2026-05-29",
-        "value": 516
+        "value": 3631
+      },
+      {
+        "date": "2026-05-30",
+        "value": 322
       }
     ],
     "youtube": [
@@ -584,7 +592,7 @@
       },
       {
         "date": "2026-05-27",
-        "value": 0
+        "value": 80
       },
       {
         "date": "2026-05-28",
@@ -593,7 +601,59 @@
       {
         "date": "2026-05-29",
         "value": 0
+      },
+      {
+        "date": "2026-05-30",
+        "value": 0
       }
     ]
+  },
+  "provenance": {
+    "source": "Upload-Post API (api.upload-post.com)",
+    "cross_check_dashboard": "https://app.upload-post.com",
+    "endpoints": [
+      "GET /uploadposts/users",
+      "GET /analytics/{profile}?platforms=tiktok,instagram,youtube",
+      "GET /uploadposts/history"
+    ],
+    "raw_pulled_at": "2026-05-30T11:00:05.162292+00:00",
+    "pull_schedule": "daily 08:00 (LaunchAgent com.tabuu.farm-metrics)",
+    "tracking_since": "2026-04-14",
+    "method": {
+      "reach_daily": "per-platform daily reach = sum across all profiles of the API reach_timeseries value for that date",
+      "history": "farm_history.json keeps the MAX value ever seen per (platform, date) across all daily pulls, so the API's rolling 30d window cannot erase older days",
+      "reach_7d": "sum of daily reach for dates >= today-7",
+      "reach_30d": "sum of daily reach for dates >= today-30",
+      "reach_total": "sum of all daily reach since tracking_since",
+      "followers_likes_comments": "current snapshot from the API analytics window (not cumulative)"
+    },
+    "invariant": "reach_7d <= reach_30d <= reach_total — checked every run; the build fails if violated",
+    "invariant_passed": true
+  },
+  "verification": {
+    "note": "published reach (history-based) shown next to the raw single-pull values it is derived from, per platform",
+    "per_platform": {
+      "tiktok": {
+        "reach_7d_published": 30569,
+        "reach_30d_published": 271158,
+        "reach_total_published": 294185,
+        "reach_30d_this_pull_raw": 228543,
+        "api_impressions_field_raw": 68925
+      },
+      "instagram": {
+        "reach_7d_published": 19281,
+        "reach_30d_published": 114788,
+        "reach_total_published": 164243,
+        "reach_30d_this_pull_raw": 103167,
+        "api_impressions_field_raw": 121505
+      },
+      "youtube": {
+        "reach_7d_published": 30506,
+        "reach_30d_published": 152816,
+        "reach_total_published": 251661,
+        "reach_30d_this_pull_raw": 107495,
+        "api_impressions_field_raw": 107495
+      }
+    }
   }
 }

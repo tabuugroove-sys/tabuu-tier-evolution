@@ -29,12 +29,17 @@ PROJECT_DIR="/Users/a1111/Downloads/tabuu-tier-evolution"
   # Only farm_metrics_public.json is tracked; private files stay gitignored.
   if ! git diff --quiet -- farm_metrics_public.json; then
     git add farm_metrics_public.json
-    git -c user.name="TABUU farm bot" -c user.email="tabuugroove@gmail.com" \
-        commit -m "Auto-update public farm metrics ($(date +%Y-%m-%d))" -- farm_metrics_public.json
-    if git push origin main; then
-      echo "Pushed public metrics to GitHub Pages"
+    if git -c user.name="TABUU farm bot" -c user.email="tabuugroove@gmail.com" \
+         commit -m "Auto-update public farm metrics ($(date +%Y-%m-%d))" -- farm_metrics_public.json; then
+      # Reconcile with remote first so a non-fast-forward can't wedge the push.
+      git pull --rebase origin main || { git rebase --abort 2>/dev/null; true; }
+      if git push origin main; then
+        echo "Pushed public metrics to GitHub Pages"
+      else
+        echo "WARN: git push failed (will retry next run)"
+      fi
     else
-      echo "WARN: git push failed (will retry next run)"
+      echo "WARN: commit failed — skipping push this run"
     fi
   else
     echo "No change in public metrics — nothing to push"
