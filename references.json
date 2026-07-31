@@ -1,28 +1,99 @@
 {
   "updated_at": "2026-07-31",
-  "note": "Promotion benchmarks — accounts/artists whose growth we study and reproduce for TABUU.",
+  "note": "Референсы — у кого берём идею. Сгруппированы по типу: визуал, звук/жанр, путь и продвижение.",
+  "groups": [
+    { "id": "visual", "title": "🎨 Визуальный стиль", "hint": "оформление, подача, эстетика" },
+    { "id": "sound", "title": "🎧 Звук и жанр", "hint": "куда целимся по музыке — и чем называться в питче" },
+    { "id": "career", "title": "📈 Путь и продвижение", "hint": "как именно люди пробивались" }
+  ],
   "cases": [
     {
       "name": "T. Zakharova",
       "handle": "music.yandex.ru/artist/25364339",
       "platform": "Yandex Music",
+      "type": "visual",
       "url": "https://music.yandex.ru/artist/25364339",
-      "metric": "925K",
-      "metric_label": "monthly listeners",
-      "niche": "RU streaming",
-      "tags": ["yandex", "playlist growth", "link-in-bio"],
-      "why": "Reference for scaling to ~1M monthly listeners on Yandex Music. Shared as a link-in-bio (utm_source=ig) — the IG→Yandex funnel is exactly the cross-platform play we want to reproduce for TABUU."
+      "niche": "Визуал",
+      "tags": ["обложки", "подача артиста", "цвет"],
+      "why": "Референс по визуальному стилю — оформление артист-страницы, обложки, общая эстетика подачи. Берём картинку, не стратегию: Яндекс.Музыка к бразильской клубной сцене отношения не имеет."
     },
     {
       "name": "dizainer__life",
       "handle": "@dizainer__life",
       "platform": "Instagram",
+      "type": "visual",
       "url": "https://www.instagram.com/dizainer__life/",
-      "metric": null,
-      "metric_label": "followers",
       "niche": "Design / lifestyle",
-      "tags": ["instagram", "reels", "niche content"],
-      "why": "TODO: fill the case — follower count + what specifically works (hook style, Reels format, posting cadence, niche angle). Couldn't auto-read: Instagram is behind login."
+      "tags": ["instagram", "reels", "подача"],
+      "why": "TODO: дозаполнить — что именно берём (формат Reels, хук, сетка профиля, цвет). Автоматически не считал: Instagram за логином."
+    },
+
+    {
+      "name": "Maz",
+      "handle": "Dawn Patrol Records",
+      "platform": "Beatport",
+      "type": "sound",
+      "url": "https://www.beatport.com/label/dawn-patrol-records/95744",
+      "metric": "#2",
+      "metric_label": "Afro House лейбл на Beatport",
+      "niche": "Afro House",
+      "tags": ["референс в питче", "Dawn Patrol", "PT-BR вокал"],
+      "why": "Основной ориентир по звуку и первое имя, которое называем в питче — чтобы куратор не спутал нас с Afrobeats/Amapiano-кругом. Их «Brisa» (Maz & Antdot feat. Jéssica Gaspar) — эталон фирменного хода жанра: португалоязычная вокальная фича."
+    },
+    {
+      "name": "Antdot",
+      "handle": "Dawn Patrol Records",
+      "platform": "Beatport",
+      "type": "sound",
+      "url": "https://www.beatport.com/artist/antdot/778407",
+      "niche": "Afro House · BR",
+      "tags": ["референс в питче", "бразилец"],
+      "why": "Второе имя в связке референсов. Бразильский артист в том же лейбле — доказательство, что этот звук из Бразилии выходит на международный уровень."
+    },
+    {
+      "name": "Curol",
+      "handle": "@curol",
+      "platform": "Beatport",
+      "type": "sound",
+      "url": "https://www.beatport.com/artist/curol/933480",
+      "niche": "Afro House · SP",
+      "tags": ["Сан-Паулу", "Crema", "Só Track Boa"],
+      "why": "Самый близкий к нам географически ориентир: играл b2b с Camila Jun на Só Track Boa 2026 (Интерлагос), и с ним Cosmic Souls запускали лейбл в Crema — той самой площадке, куда мы целимся."
+    },
+
+    {
+      "name": "Mochakk",
+      "handle": "@mochakk",
+      "platform": "Instagram",
+      "type": "career",
+      "url": "https://www.instagram.com/mochakk/",
+      "metric": "1M+",
+      "metric_label": "просмотров за 24 часа с одного клипа",
+      "niche": "BR → мир",
+      "tags": ["вертикальные клипы", "кейс зажигания"],
+      "why": "Главный бразильский кейс «как выстрелить»: 49-секундная ВЕРТИКАЛЬНАЯ нарезка (под PAWSA «Roll Play») сделала 1M+ просмотров за сутки и конвертировалась в топы Beatport и мировые букинги. Вывод для нас: режем 10–20 вертикалок из уже отснятых 24 ГБ. Тридцатиминутное видео сета не смотрит никто."
+    },
+    {
+      "name": "Soldera",
+      "handle": "Soldera",
+      "platform": "Beatport",
+      "type": "career",
+      "url": "https://www.beatport.com/artist/soldera/588894",
+      "niche": "BR",
+      "tags": ["резиденция", "своя вечеринка", "лестница"],
+      "why": "Эталон бразильской лестницы, ровно наш маршрут: резидент в Anzuclub → своя вечеринка → Green Valley / Warung / Tomorrowland. Плюс чартился с территории Бразилии на итальянском лейбле — география не приговор."
+    },
+    {
+      "name": "Cactunes Records",
+      "handle": "@cactunes",
+      "platform": "Instagram",
+      "type": "career",
+      "url": "https://www.instagram.com/cactunes/",
+      "metric": "~73",
+      "metric_label": "релиза · ~2M стримов",
+      "niche": "SP · лейбл + клуб",
+      "tags": ["цель №1", "владеют Crema", "Afro House"],
+      "why": "Не столько референс, сколько ЦЕЛЬ: пятеро участников, сет-листы «Afro House, Indie Dance, Deep and Progressive», заявленная миссия — «давать место артистам с потенциалом». И главное: по данным CNPJ четверо из пяти — учредители CREMA CLUB. Лейбл и площадка это одни и те же люди, поэтому питчим их, а не «клуб»."
     }
   ]
 }

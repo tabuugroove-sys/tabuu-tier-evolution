@@ -127,7 +127,10 @@
   .chart-card .chart-total { font-size:22px; font-weight:700; color:#fff; margin-bottom:14px; }
   .chart-card canvas { width:100% !important; height:180px !important; }
   .refs-intro { color:rgba(255,255,255,0.5); font-size:14px; margin:6px 0 22px; }
-  .refs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .refs-grid { display:flex; flex-direction:column; gap:30px; }
+  .ref-group-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color:#ffd54a; font-weight:700; margin-bottom:14px; }
+  .ref-group-hint { color:rgba(255,255,255,0.35); font-weight:400; text-transform:none; letter-spacing:0; font-size:12px; }
+  .refs-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
   .ref-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:10px; transition:border-color .2s, transform .2s; }
   .ref-card:hover { border-color:rgba(255,213,74,0.4); transform:translateY(-2px); }
   .ref-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
@@ -726,11 +729,11 @@ async function loadReferences() {
     if (!res.ok) throw 0;
     const d = await res.json();
     document.getElementById('refs-updated').textContent =
-      `${(d.cases || []).length} cases · benchmarks for promotion`;
-    grid.innerHTML = (d.cases || []).map(c => {
+      `${(d.cases || []).length} референсов · обновлено ${esc(d.updated_at || '')}`;
+    const card = c => {
       const plat = (c.platform || '').toLowerCase().replace(/[^a-z]/g, '');
       const platCls = ['instagram','yandexmusic','yandex','youtube','tiktok'].includes(plat) ? 'rp-' + plat : 'rp-default';
-      const todo = !c.metric || /^todo/i.test(c.why || '');
+      const todo = /^todo/i.test((c.why || '').trim());
       return `<div class="ref-card">
         <div class="ref-top">
           <div>
@@ -744,7 +747,17 @@ async function loadReferences() {
         <div class="ref-tags">${c.niche ? `<span class="ref-tag">${esc(c.niche)}</span>` : ''}${(c.tags || []).map(t => `<span class="ref-tag">${esc(t)}</span>`).join('')}</div>
         ${c.url ? `<a class="ref-link" href="${esc(c.url)}" target="_blank" rel="noopener">Open ${esc(c.platform || 'link')} ↗</a>` : ''}
       </div>`;
-    }).join('');
+    };
+    const cases = d.cases || [];
+    const groups = (d.groups || []).filter(g => cases.some(c => c.type === g.id));
+    const ungrouped = cases.filter(c => !groups.some(g => g.id === c.type));
+    grid.innerHTML =
+      groups.map(g => `
+        <div class="ref-group">
+          <div class="ref-group-title">${esc(g.title)}${g.hint ? ` <span class="ref-group-hint">— ${esc(g.hint)}</span>` : ''}</div>
+          <div class="refs-cards">${cases.filter(c => c.type === g.id).map(card).join('')}</div>
+        </div>`).join('') +
+      (ungrouped.length ? `<div class="ref-group"><div class="refs-cards">${ungrouped.map(card).join('')}</div></div>` : '');
   } catch (e) {
     document.getElementById('refs-updated').textContent = '';
     grid.innerHTML = '<div style="color:rgba(255,255,255,0.5);padding:30px">No references.json found.</div>';
