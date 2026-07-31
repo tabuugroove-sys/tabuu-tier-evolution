@@ -47,13 +47,21 @@
   .foot { color:rgba(255,255,255,0.35); font-size:11px; line-height:1.6; margin-top:36px; border-top:1px solid rgba(255,255,255,0.07); padding-top:16px; }
   .empty { background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.15); border-radius:12px; padding:40px; text-align:center; color:rgba(255,255,255,0.5); }
   @media(max-width:720px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} }
+  .lang-switch { position:absolute; top:18px; right:20px; display:flex; gap:2px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:3px; z-index:50; }
+  .lang-switch button { background:none; border:none; color:rgba(255,255,255,0.5); font-size:11px; font-weight:700; letter-spacing:0.5px; padding:5px 10px; border-radius:6px; cursor:pointer; transition:all .15s; }
+  .lang-switch button:hover { color:#fff; }
+  .lang-switch button.active { background:#ffd54a; color:#0a0a12; }
+  @media(max-width:600px){ .lang-switch { position:static; margin:0 0 14px auto; width:max-content; } }
 </style>
 </head>
 <body>
+  <div class="lang-switch" id="lang-switch">
+    <button data-lang="ru">RU</button><button data-lang="en">EN</button><button data-lang="pt">PT-BR</button>
+  </div>
   <div class="top">
     <div>
-      <h1>💰 Royalty Monitor</h1>
-      <div class="sub">Track-level CID status · expected vs paid royalty · auto-drafted claims · <a href="index.html">← dashboard</a></div>
+      <h1 data-i18n="roy.title">💰 Royalty Monitor</h1>
+      <div class="sub"><span data-i18n="roy.subtitle">Track-level CID status · expected vs paid royalty · auto-drafted claims</span> · <a href="index.html" data-i18n="roy.backLink">← dashboard</a></div>
     </div>
   </div>
   <div class="updated" id="updated">Loading…</div>
@@ -61,37 +69,75 @@
   <div class="foot" id="foot"></div>
 
 <script>
+// ───── i18n runtime (RU default; only tf() here — render() shadows `t`) ─────
+const LANGS = ['ru','en','pt'];
+const DEFAULT_LANG = 'ru';
+let LANG = DEFAULT_LANG, BUNDLE = {}, BUNDLE_EN = {};
+function tf(key, fallback, ...args) {
+  let s = BUNDLE[key] ?? BUNDLE_EN[key];
+  if (s == null) s = fallback;
+  args.forEach((v,i) => { s = String(s).split('{'+i+'}').join(v); });
+  return s;
+}
+async function loadBundle(lang) {
+  try { const r = await fetch(`i18n/${lang}.json?cb=`+Date.now()); return r.ok ? await r.json() : {}; }
+  catch { return {}; }
+}
+async function setLang(lang) {
+  if (!LANGS.includes(lang)) lang = DEFAULT_LANG;
+  LANG = lang;
+  try { localStorage.setItem('tabuu_lang', lang); } catch {}
+  BUNDLE = await loadBundle(lang);
+  if (lang !== 'en' && !Object.keys(BUNDLE_EN).length) BUNDLE_EN = await loadBundle('en');
+  document.querySelectorAll('#lang-switch button')
+    .forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = BUNDLE[el.dataset.i18n] ?? BUNDLE_EN[el.dataset.i18n];
+    if (v != null) el.textContent = v;
+  });
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+  const pt = BUNDLE['roy.pageTitle'] ?? BUNDLE_EN['roy.pageTitle'];
+  if (pt) document.title = pt;
+  if (window.__royData) render(window.__royData);
+}
+document.getElementById('lang-switch').addEventListener('click', e => {
+  if (e.target.dataset.lang) setLang(e.target.dataset.lang);
+});
+
 const fmtMoney = (v,c) => (c==='BRL'?'R$':'$') + (Number(v)||0).toFixed(2);
 const fmt = v => { v=Number(v)||0; return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(1)+'k':String(v); };
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const STATUS_LABEL = {
+const STATUS_FALLBACK = {
   ok_earning:'Earning', waiting_royalty:'Waiting (in lag)', royalty_missing:'Royalty missing',
   yt_not_matching:'YT not matching', cid_disabled:'CID off', no_usage:'No usage'
 };
-const ago = iso => { if(!iso) return 'never'; const s=(Date.now()-new Date(iso))/1000;
-  const d=Math.floor(s/86400), h=Math.floor(s/3600); return d>0?d+'d ago':h>0?h+'h ago':'just now'; };
+const statusLabel = k => tf('roy.status.' + k, STATUS_FALLBACK[k] || k);
+const ago = iso => { if(!iso) return tf('common.ago.never','never'); const s=(Date.now()-new Date(iso))/1000;
+  const d=Math.floor(s/86400), h=Math.floor(s/3600);
+  return d>0?tf('common.ago.days','{0}d ago',d):h>0?tf('common.ago.hours','{0}h ago',h):tf('common.ago.justNow','just now'); };
 
 function render(d){
   const t = d.totals || {}, c = d.currency || 'BRL';
   document.getElementById('updated').innerHTML =
-    `Computed ${ago(d.updated_at)} · scraped ${ago(d.scraped_at)} · source: Ditto Sales + YouTube Artist Analytics (browser-scraped)`;
+    tf('roy.updated', 'Computed {0} · scraped {1} · source: Ditto Sales + YouTube Artist Analytics (browser-scraped)',
+       ago(d.updated_at), ago(d.scraped_at));
 
   const gaps = (d.releases||[]).filter(r => r.claim_type).length;
   let html = '';
   if (d.is_stale)
-    html += `<div class="banner">⚠ No scrape yet — numbers below are seeded/known values. Run a Ditto + YouTube scrape to refresh.</div>`;
+    html += `<div class="banner">${tf('roy.banner.stale', '⚠ No scrape yet — numbers below are seeded/known values. Run a Ditto + YouTube scrape to refresh.')}</div>`;
 
   html += `<div class="kpi-grid">
-    <div class="kpi"><div class="kpi-label">Lifetime royalty</div><div class="kpi-value">${fmtMoney(t.lifetime_royalty,c)}</div><div class="kpi-sub">all stores, all time</div></div>
-    <div class="kpi"><div class="kpi-label">YouTube CID royalty</div><div class="kpi-value">${fmtMoney(t.cid_royalty_lifetime,c)}</div><div class="kpi-sub">lifetime, content ID only</div></div>
-    <div class="kpi"><div class="kpi-label">Matched views (28d)</div><div class="kpi-value">${fmt(t.yt_matched_28d)}</div><div class="kpi-sub">credited on artist channel</div></div>
-    <div class="kpi ${gaps?'warn':''}"><div class="kpi-label">Releases with gaps</div><div class="kpi-value">${gaps}</div><div class="kpi-sub">of ${(d.releases||[]).length} releases</div></div>
+    <div class="kpi"><div class="kpi-label">${tf('roy.kpi.lifetime.label','Lifetime royalty')}</div><div class="kpi-value">${fmtMoney(t.lifetime_royalty,c)}</div><div class="kpi-sub">${tf('roy.kpi.lifetime.sub','all stores, all time')}</div></div>
+    <div class="kpi"><div class="kpi-label">${tf('roy.kpi.cidRoyalty.label','YouTube CID royalty')}</div><div class="kpi-value">${fmtMoney(t.cid_royalty_lifetime,c)}</div><div class="kpi-sub">${tf('roy.kpi.cidRoyalty.sub','lifetime, content ID only')}</div></div>
+    <div class="kpi"><div class="kpi-label">${tf('roy.kpi.matchedViews.label','Matched views (28d)')}</div><div class="kpi-value">${fmt(t.yt_matched_28d)}</div><div class="kpi-sub">${tf('roy.kpi.matchedViews.sub','credited on artist channel')}</div></div>
+    <div class="kpi ${gaps?'warn':''}"><div class="kpi-label">${tf('roy.kpi.gaps.label','Releases with gaps')}</div><div class="kpi-value">${gaps}</div><div class="kpi-sub">${tf('roy.kpi.gaps.sub','of {0} releases',(d.releases||[]).length)}</div></div>
   </div>`;
 
   // Releases table
-  html += `<div class="section-title">Releases · CID & royalty status</div>`;
+  html += `<div class="section-title">${tf('roy.section.releases','Releases · CID & royalty status')}</div>`;
   if ((d.releases||[]).length){
-    html += `<table><thead><tr><th>Release</th><th>ISRC</th><th>CID</th><th class="num">Matched views</th><th class="num">Royalty</th><th>Status</th></tr></thead><tbody>`;
+    html += `<table><thead><tr><th>${tf('roy.table.release','Release')}</th><th>ISRC</th><th>CID</th><th class="num">${tf('roy.table.matchedViews','Matched views')}</th><th class="num">${tf('roy.table.royalty','Royalty')}</th><th>${tf('roy.table.status','Status')}</th></tr></thead><tbody>`;
     for (const r of d.releases){
       html += `<tr>
         <td><strong>${esc(r.title)}</strong></td>
@@ -99,14 +145,14 @@ function render(d){
         <td>${esc(r.cid_status||'?')}</td>
         <td class="num">${r.yt_matched_views==null?'—':fmt(r.yt_matched_views)}</td>
         <td class="num">${r.royalty_total==null?'—':fmtMoney(r.royalty_total,c)}</td>
-        <td><span class="badge b-${r.status}">${STATUS_LABEL[r.status]||r.status}</span></td>
+        <td><span class="badge b-${r.status}">${esc(statusLabel(r.status))}</span></td>
       </tr>`;
     }
     html += `</tbody></table>`;
-  } else html += `<div class="empty">No release data yet.</div>`;
+  } else html += `<div class="empty">${tf('roy.empty.releases','No release data yet.')}</div>`;
 
   // Claims
-  html += `<div class="section-title">Auto-drafted claims (${(d.claims||[]).length})</div>`;
+  html += `<div class="section-title">${tf('roy.section.claims','Auto-drafted claims ({0})',(d.claims||[]).length)}</div>`;
   if ((d.claims||[]).length){
     d.claims.forEach((cl,i) => {
       const subj = (cl.body.match(/Subject:\s*\*\*?(.+)/i) || cl.body.match(/\*\*Subject:\*\*\s*(.+)/i) || [,''])[1] || cl.template;
@@ -117,37 +163,49 @@ function render(d){
         <div class="claim-head" onclick="this.parentElement.querySelector('.claim-body').style.display = this.parentElement.querySelector('.claim-body').style.display==='block'?'none':'block'">
           <div>
             <div class="claim-title">${cl.target==='ditto'?'📧 Ditto':'▶ YouTube'} — ${esc(cl.template.replace(/_/g,' '))}</div>
-            <div class="claim-meta">${cl.count} release(s): ${esc(cl.releases.join(', '))}</div>
+            <div class="claim-meta">${tf('roy.claim.releaseCount','{0} release(s):',cl.count)} ${esc(cl.releases.join(', '))}</div>
           </div>
           <span class="tag ${cl.target==='ditto'?'tag-ditto':'tag-youtube'}">${cl.target}</span>
         </div>
         <div class="claim-body">
           <pre id="cb${i}">${esc(cl.body)}</pre>
           <div class="claim-actions">
-            <button class="act" onclick="navigator.clipboard.writeText(document.getElementById('cb${i}').innerText); this.textContent='Copied ✓'">Copy text</button>
-            <a class="act ghost" href="${esc(mailto)}" ${cl.target==='ditto'?'':'target="_blank"'}>${cl.target==='ditto'?'Open email draft':'Open YouTube form'}</a>
+            <button class="act" onclick="navigator.clipboard.writeText(document.getElementById('cb${i}').innerText); this.textContent='${tf('roy.claim.copied','Copied ✓')}'">${tf('roy.claim.copy','Copy text')}</button>
+            <a class="act ghost" href="${esc(mailto)}" ${cl.target==='ditto'?'':'target="_blank"'}>${cl.target==='ditto'?tf('roy.claim.openEmail','Open email draft'):tf('roy.claim.openYoutubeForm','Open YouTube form')}</a>
           </div>
         </div>
       </div>`;
     });
-  } else html += `<div class="empty">No gaps detected — nothing to claim. 🎉</div>`;
+  } else html += `<div class="empty">${tf('roy.empty.claims','No gaps detected — nothing to claim. 🎉')}</div>`;
 
   document.getElementById('root').innerHTML = html;
   const m = d.method || {};
   document.getElementById('foot').innerHTML =
-    `Detection is fully deterministic (no LLM): royalty lag window = ${m.royalty_lag_days||75} days; rules in <code>scraper/royalty_monitor.py</code>. ` +
-    `Claims are template-filled from <code>scraper/claim_templates/</code> — review before sending. ` +
-    `Data is local-only (gitignored); this page shows nothing when hosted publicly.`;
+    tf('roy.foot.detection',
+       'Detection is fully deterministic (no LLM): royalty lag window = {0} days; rules in {1}.',
+       m.royalty_lag_days || 75, '<code>scraper/royalty_monitor.py</code>')
+    + ' '
+    + tf('roy.foot.claims', 'Claims are template-filled from {0} — review before sending.',
+         '<code>scraper/claim_templates/</code>');
 }
 
-fetch('royalties.json?cb=' + Date.now())
-  .then(r => { if(!r.ok) throw 0; return r.json(); })
-  .then(render)
-  .catch(() => {
+// Boot: language first (RU default, remembered), then data.
+(async () => {
+  let stored = null;
+  try { stored = localStorage.getItem('tabuu_lang'); } catch {}
+  await setLang(stored || DEFAULT_LANG);
+  try {
+    const r = await fetch('royalties.json?cb=' + Date.now());
+    if (!r.ok) throw 0;
+    const d = await r.json();
+    window.__royData = d;
+    render(d);
+  } catch {
     document.getElementById('updated').textContent = '';
     document.getElementById('root').innerHTML =
-      `<div class="empty">No <code>royalties.json</code> found.<br><br>This page is local-only. Run <code>python3 scraper/royalty_monitor.py</code> after a scrape to generate it.</div>`;
-  });
+      `<div class="empty">${tf('roy.empty.noData.title','No {0} found.','<code>royalties.json</code>')}<br><br>${tf('roy.empty.noData.hint','This page is local-only. Run {0} after a scrape to generate it.','<code>python3 scraper/royalty_monitor.py</code>')}</div>`;
+  }
+})();
 </script>
 </body>
 </html>

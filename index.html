@@ -150,19 +150,28 @@
   .ref-tag { font-size:10px; color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:5px; }
   .ref-link { color:#4a9eff; font-size:13px; text-decoration:none; font-weight:600; margin-top:2px; }
   .ref-link:hover { text-decoration:underline; }
+  .lang-switch { position:absolute; top:18px; right:20px; display:flex; gap:2px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:3px; z-index:50; }
+  .lang-switch button { background:none; border:none; color:rgba(255,255,255,0.5); font-size:11px; font-weight:700; letter-spacing:0.5px; padding:5px 10px; border-radius:6px; cursor:pointer; transition:all .15s; }
+  .lang-switch button:hover { color:#fff; }
+  .lang-switch button.active { background:#ffd54a; color:#0a0a12; }
+  @media(max-width:600px){ .lang-switch { position:static; margin:0 0 14px auto; width:max-content; } }
 </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <body>
 
-<h1>TABUU · EVOLUTION T1 → T9</h1>
-<div class="sub">from noname bedroom to anti-fashion legend · focus on actions, not vanity metrics</div>
+<div class="lang-switch" id="lang-switch">
+  <button data-lang="ru">RU</button><button data-lang="en">EN</button><button data-lang="pt">PT-BR</button>
+</div>
+
+<h1 data-i18n="header.title">TABUU · EVOLUTION T1 → T9</h1>
+<div class="sub" data-i18n="header.tagline">from noname bedroom to anti-fashion legend · focus on actions, not vanity metrics</div>
 
 <nav class="nav">
-  <button class="active" data-view="tiers">Tier Evolution</button>
-  <button data-view="cover">Cover Farm</button>
-  <button data-view="refs">References</button>
-  <a href="royalties.html" class="nav-link">💰 Royalties</a>
+  <button class="active" data-view="tiers" data-i18n="nav.tiers">Tier Evolution</button>
+  <button data-view="cover" data-i18n="nav.cover">Cover Farm</button>
+  <button data-view="refs" data-i18n="nav.refs">References</button>
+  <a href="royalties.html" class="nav-link" data-i18n="nav.royalties">💰 Royalties</a>
 </nav>
 
 <div class="view active" id="view-tiers">
@@ -172,16 +181,16 @@
 </div>
 
 <div class="view" id="view-cover">
-  <div class="last-update" id="cover-updated">Loading…</div>
+  <div class="last-update" id="cover-updated" data-i18n="common.loading">Loading…</div>
   <div class="kpi-grid" id="cover-kpis"></div>
 
   <div class="cover-section">
-    <h2>📈 Daily reach over time <span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;letter-spacing:0">(reach_timeseries field — different from KPI "Views" for TikTok)</span></h2>
+    <h2><span data-i18n="cover.section.dailyReach">📈 Daily reach over time</span> <span data-i18n="cover.section.dailyReachNote" style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;letter-spacing:0">(reach_timeseries field — different from KPI "Views" for TikTok)</span></h2>
     <div class="chart-controls" id="chart-controls">
-      <button data-period="7" class="active">Week</button>
-      <button data-period="30">Month</button>
-      <button data-period="90">Quarter</button>
-      <button data-period="365">Year</button>
+      <button data-period="7" class="active" data-i18n="cover.chart.week">Week</button>
+      <button data-period="30" data-i18n="cover.chart.month">Month</button>
+      <button data-period="90" data-i18n="cover.chart.quarter">Quarter</button>
+      <button data-period="365" data-i18n="cover.chart.year">Year</button>
     </div>
     <div class="charts-grid">
       <div class="chart-card">
@@ -203,28 +212,28 @@
   </div>
 
   <div class="cover-section">
-    <h2>📊 Per platform</h2>
+    <h2 data-i18n="cover.section.perPlatform">📊 Per platform</h2>
     <div id="cover-platforms"></div>
   </div>
 
   <div class="cover-section">
-    <h2>🏆 Top profiles by views</h2>
+    <h2 data-i18n="cover.section.topProfiles">🏆 Top profiles by views</h2>
     <div class="profiles-grid" id="cover-profiles"></div>
   </div>
 
   <div class="cover-section">
-    <h2>📤 Recent posts (last 50)</h2>
+    <h2 data-i18n="cover.section.recentPosts">📤 Recent posts (last 50)</h2>
     <div class="post-list" id="cover-posts"></div>
   </div>
 </div>
 
 <div class="view" id="view-refs">
-  <div class="last-update" id="refs-updated">Loading…</div>
-  <div class="refs-intro">Аккаунты и артисты, чьё продвижение сработало — изучаем и повторяем их приёмы для TABUU.</div>
+  <div class="last-update" id="refs-updated" data-i18n="common.loading">Loading…</div>
+  <div class="refs-intro" data-i18n="refs.intro">Аккаунты и артисты, чьё продвижение сработало — изучаем и повторяем их приёмы для TABUU.</div>
   <div class="refs-grid" id="refs-grid"></div>
 </div>
 
-<div class="footer">Calibration: IQ-01 Fee Map + IQ-02 Rankings That Matter (MARUX research) + Brazil booking market analysis</div>
+<div class="footer" data-i18n="footer.calibration">Calibration: IQ-01 Fee Map + IQ-02 Rankings That Matter (MARUX research) + Brazil booking market analysis</div>
 
 <div class="modal" id="modal">
   <button class="modal-close" id="modal-close">×</button>
@@ -232,6 +241,65 @@
 </div>
 
 <script>
+// ───── i18n runtime ──────────────────────────────────────
+// Locale bundles live in i18n/{ru,en,pt}.json as flat dotted-key objects.
+// Russian is the default. Falls back: current lang -> en -> the inline
+// English already in the markup, so the page is never blank on a miss.
+const LANGS = ['ru', 'en', 'pt'];
+const DEFAULT_LANG = 'ru';
+let LANG = DEFAULT_LANG;
+let BUNDLE = {};
+let BUNDLE_EN = {};
+
+function t(key, ...args) {
+  let s = BUNDLE[key] ?? BUNDLE_EN[key];
+  if (s == null) return null;               // caller keeps its inline fallback
+  args.forEach((v, i) => { s = s.split('{' + i + '}').join(v); });
+  return s;
+}
+// t with fallback text when the key is missing entirely
+const tf = (key, fallback, ...args) => t(key, ...args) ?? fallback;
+
+async function loadBundle(lang) {
+  try {
+    const r = await fetch(`i18n/${lang}.json?cb=` + Date.now());
+    return r.ok ? await r.json() : {};
+  } catch { return {}; }
+}
+
+function applyStatic() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t(el.dataset.i18n);
+    if (v != null) el.textContent = v;
+  });
+  document.documentElement.lang = LANG === 'pt' ? 'pt-BR' : LANG;
+  const pt = t('page.title');
+  if (pt) document.title = pt;
+}
+
+// Re-render whatever dynamic views have already been built.
+function rerenderAll() {
+  if (typeof buildTierCards === 'function') buildTierCards();
+  if (window.__coverLoaded && typeof loadCoverFarm === 'function') loadCoverFarm();
+  if (window.__refsLoaded && typeof loadReferences === 'function') loadReferences();
+}
+
+async function setLang(lang) {
+  if (!LANGS.includes(lang)) lang = DEFAULT_LANG;
+  LANG = lang;
+  try { localStorage.setItem('tabuu_lang', lang); } catch {}
+  BUNDLE = await loadBundle(lang);
+  if (lang !== 'en' && !Object.keys(BUNDLE_EN).length) BUNDLE_EN = await loadBundle('en');
+  document.querySelectorAll('#lang-switch button')
+    .forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  applyStatic();
+  rerenderAll();
+}
+
+document.getElementById('lang-switch').addEventListener('click', e => {
+  if (e.target.dataset.lang) setLang(e.target.dataset.lang);
+});
+
 const tiers = [
   {
     num: 1,
@@ -419,68 +487,75 @@ const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modal-body');
 const modalClose = document.getElementById('modal-close');
 
-// Generate cards
-tiers.forEach(tier => {
-  const card = document.createElement('div');
-  card.className = 'card';
-  const actionsList = tier.actions.map(a => `<li>${a.num}</li>`).join('');
-  card.innerHTML = `
-    <img src="${tier.img}" alt="T${tier.num}">
-    <div class="card-info">
-      <div class="card-title">T${tier.num} · ${tier.title.toUpperCase()}</div>
-      <div class="card-subtitle">${tier.subtitle}</div>
-      <div class="card-fee">Fee: ${tier.fee}</div>
-      <div class="card-actions-title">🎬 What unlocks this tier</div>
-      <ul class="card-actions">${actionsList}</ul>
-      <div class="card-cta">Click for details →</div>
-    </div>
-  `;
-  card.addEventListener('click', () => showModal(tier));
-  grid.appendChild(card);
-});
+// Localised accessors — fall back to the inline English on a missing key.
+const tv = (tier, field) => tf(`tier.${tier.num}.${field}`, tier[field]);
+const ta = (tier, i, field) => tf(`tier.${tier.num}.action.${i + 1}.${field}`, tier.actions[i][field]);
+
+// Generate cards (re-callable: language switch rebuilds them)
+function buildTierCards() {
+  grid.innerHTML = '';
+  tiers.forEach(tier => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const actionsList = tier.actions.map((a, i) => `<li>${ta(tier, i, 'num')}</li>`).join('');
+    card.innerHTML = `
+      <img src="${tier.img}" alt="T${tier.num}">
+      <div class="card-info">
+        <div class="card-title">${tf('card.title', 'T{0} · {1}', tier.num, tv(tier, 'title').toUpperCase())}</div>
+        <div class="card-subtitle">${tv(tier, 'subtitle')}</div>
+        <div class="card-fee">${tf('card.fee', 'Fee: {0}', tv(tier, 'fee'))}</div>
+        <div class="card-actions-title">${tf('card.actionsTitle', '🎬 What unlocks this tier')}</div>
+        <ul class="card-actions">${actionsList}</ul>
+        <div class="card-cta">${tf('card.cta', 'Click for details →')}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => showModal(tier));
+    grid.appendChild(card);
+  });
+}
 
 function showModal(tier) {
-  const actionsHtml = tier.actions.map(action => `
+  const actionsHtml = tier.actions.map((action, i) => `
     <div class="action-item">
-      <span class="action-num">${action.num}</span>
-      ${action.desc}
+      <span class="action-num">${ta(tier, i, 'num')}</span>
+      ${ta(tier, i, 'desc')}
     </div>
   `).join('');
 
   modalBody.innerHTML = `
-    <h2>T${tier.num} · ${tier.title}</h2>
-    <div class="modal-subtitle">${tier.subtitle}</div>
+    <h2>${tf('modal.title', 'T{0} · {1}', tier.num, tv(tier, 'title'))}</h2>
+    <div class="modal-subtitle">${tv(tier, 'subtitle')}</div>
 
     <div class="modal-focus">
-      🎯 <strong>What promoter looks for:</strong> ${tier.focus}
+      <strong>${tf('modal.focus', '🎯 What promoter looks for:')}</strong> ${tv(tier, 'focus')}
     </div>
 
     <div class="section">
-      <h3>🎬 Top 5 Actions</h3>
+      <h3>${tf('modal.actions', '🎬 Top 5 Actions')}</h3>
       <div class="action-list">${actionsHtml}</div>
     </div>
 
     <div class="section">
-      <h3>📊 Metrics (as side effect)</h3>
+      <h3>${tf('modal.metrics', '📊 Metrics (as side effect)')}</h3>
       <div class="highlight-box">
-        ${tier.metricsExplain}
+        ${tv(tier, 'metricsExplain')}
       </div>
     </div>
 
     <div class="section">
-      <h3>💰 Booking Fee</h3>
+      <h3>${tf('modal.fee', '💰 Booking Fee')}</h3>
       <div class="fee-box">
-        <div class="fee-amount">${tier.fee}</div>
-        <div class="fee-details">${tier.whoDecides ? 'Decided by: ' + tier.whoDecides : ''}</div>
+        <div class="fee-amount">${tv(tier, 'fee')}</div>
+        <div class="fee-details">${tier.whoDecides ? tf('modal.whoDecides', 'Decided by: {0}', tv(tier, 'whoDecides')) : ''}</div>
       </div>
     </div>
 
     <div class="section">
-      <h3>📅 Concert Reality</h3>
-      <div class="highlight-box">${tier.concerts}</div>
+      <h3>${tf('modal.concerts', '📅 Concert Reality')}</h3>
+      <div class="highlight-box">${tv(tier, 'concerts')}</div>
     </div>
 
-    ${tier.warning ? `<div class="warning">${tier.warning}</div>` : ''}
+    ${tier.warning ? `<div class="warning">${tv(tier, 'warning')}</div>` : ''}
   `;
   modal.classList.add('active');
 }
@@ -543,7 +618,7 @@ async function loadCoverFarm() {
       d = await res.json();
     } else {
       res = await fetch('farm_metrics_public.json' + bust);
-      if (!res.ok) throw new Error('no metrics file');
+      if (!res.ok) throw new Error(tf('cover.error.noMetricsFile','no metrics file'));
       d = await res.json();
     }
     renderCoverFarm(d);
@@ -558,49 +633,49 @@ function renderCoverFarm(d) {
   const prov = d.provenance || {};
   const m = prov.method || {};
   const methodTip = [
-    'HOW THESE NUMBERS ARE COMPUTED',
-    '• reach (daily): ' + (m.reach_daily || ''),
-    '• 7d: ' + (m.reach_7d || ''),
-    '• 30d: ' + (m.reach_30d || ''),
-    '• total: ' + (m.reach_total || ''),
-    '• history: ' + (m.history || ''),
-    '• followers/likes/comments: ' + (m.followers_likes_comments || ''),
+    tf('cover.method.title', 'HOW THESE NUMBERS ARE COMPUTED'),
+    tf('cover.method.reachDaily', '• reach (daily): {0}', m.reach_daily || ''),
+    tf('cover.method.reach7d', '• 7d: {0}', m.reach_7d || ''),
+    tf('cover.method.reach30d', '• 30d: {0}', m.reach_30d || ''),
+    tf('cover.method.reachTotal', '• total: {0}', m.reach_total || ''),
+    tf('cover.method.history', '• history: {0}', m.history || ''),
+    tf('cover.method.followersLikesComments', '• followers/likes/comments: {0}', m.followers_likes_comments || ''),
     '',
-    'Invariant: ' + (prov.invariant || ''),
-    prov.raw_pulled_at ? 'Raw pull: ' + prov.raw_pulled_at : '',
+    tf('cover.method.invariant', 'Invariant: {0}', prov.invariant || ''),
+    prov.raw_pulled_at ? tf('cover.method.rawPull', 'Raw pull: {0}', prov.raw_pulled_at) : '',
   ].filter(Boolean).join('\n');
   const srcBits = isPublic
-    ? 'aggregate distribution stats'
-    : `${d.account || ''} · plan ${d.plan || ''}`;
+    ? tf('cover.source.aggregate','aggregate distribution stats')
+    : tf('cover.source.account','{0} · plan {1}', d.account || '', d.plan || '');
   document.getElementById('cover-updated').innerHTML =
-    `Updated ${fmtDate(d.updated_at)} · ${srcBits}`
+    `${tf('cover.updated','Updated {0}', fmtDate(d.updated_at))} · ${srcBits}`
     + (prov.source
         ? ` · <span style="cursor:help;text-decoration:underline dotted;text-underline-offset:3px"`
-          + ` title="${methodTip.replace(/"/g, '&quot;')}">source: ${prov.source} &#9432;</span>`
+          + ` title="${methodTip.replace(/"/g, '&quot;')}">${tf('cover.source.label','source: {0} \u24d8', prov.source)}</span>`
         : '');
 
   // KPIs
   const t = d.totals;
   document.getElementById('cover-kpis').innerHTML = `
     <div class="kpi up">
-      <div class="kpi-label">Reach (7d)</div>
+      <div class="kpi-label">${tf('cover.kpi.reach7d.label','Reach (7d)')}</div>
       <div class="kpi-value">${fmt(t.views_7d)}</div>
-      <div class="kpi-sub">${fmt(t.views_30d)} last 30d</div>
+      <div class="kpi-sub">${tf('cover.kpi.reach7d.sub','{0} last 30d', fmt(t.views_30d))}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Total reach</div>
+      <div class="kpi-label">${tf('cover.kpi.totalReach.label','Total reach')}</div>
       <div class="kpi-value">${fmt(t.views_total)}</div>
-      <div class="kpi-sub">${t.tracking_since ? 'since ' + new Date(t.tracking_since + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'all platforms'} · ${fmt(t.likes)} likes</div>
+      <div class="kpi-sub">${t.tracking_since ? tf('cover.kpi.totalReach.sub.since','since {0}', new Date(t.tracking_since + 'T12:00:00').toLocaleDateString(LANG==='pt'?'pt-BR':LANG==='ru'?'ru-RU':'en-US', {month:'short', day:'numeric'})) : tf('cover.kpi.totalReach.sub.allPlatforms','all platforms')} · ${tf('cover.kpi.totalReach.sub.likes','{0} likes', fmt(t.likes))}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Followers</div>
+      <div class="kpi-label">${tf('cover.kpi.followers.label','Followers')}</div>
       <div class="kpi-value">${fmt(t.followers)}</div>
-      <div class="kpi-sub">across distribution channels</div>
+      <div class="kpi-sub">${tf('cover.kpi.followers.sub','across distribution channels')}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Videos posted</div>
+      <div class="kpi-label">${tf('cover.kpi.videos.label','Videos posted')}</div>
       <div class="kpi-value">${fmt(t.videos)}</div>
-      <div class="kpi-sub">total uploaded</div>
+      <div class="kpi-sub">${tf('cover.kpi.videos.sub','total uploaded')}</div>
     </div>
   `;
 
@@ -625,7 +700,7 @@ function renderCoverFarm(d) {
   document.getElementById('cover-platforms').innerHTML = `
     <table class="platform-table">
       <thead><tr>
-        <th>Platform</th>${isPublic ? '' : '<th>Profiles</th>'}<th>Followers</th><th>Reach (all)</th><th>Reach (7d)</th><th>Likes</th><th>Comments</th>
+        <th>${tf('cover.table.platform','Platform')}</th>${isPublic ? '' : `<th>${tf('cover.table.profiles','Profiles')}</th>`}<th>${tf('cover.table.followers','Followers')}</th><th>${tf('cover.table.reachAll','Reach (all)')}</th><th>${tf('cover.table.reach7d','Reach (7d)')}</th><th>${tf('cover.table.likes','Likes')}</th><th>${tf('cover.table.comments','Comments')}</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
@@ -652,7 +727,7 @@ function renderCoverFarm(d) {
       <div class="plat">${p.platform}</div>
       <div class="cap" title="${(p.caption||'').replace(/"/g,'&quot;')}">${p.caption || p.title || '—'}</div>
       <div class="when">${fmtDate(p.at)}</div>
-      <div>${p.url ? `<a href="${p.url}" target="_blank">open ↗</a>` : ''}</div>
+      <div>${p.url ? `<a href="${p.url}" target="_blank">${tf('cover.posts.open','open ↗')}</a>` : ''}</div>
     </div>
   `).join('');
 
@@ -681,7 +756,7 @@ function renderCharts(days) {
     const labels = filtered.map(pt => pt.date.slice(5)); // MM-DD
     const values = filtered.map(pt => pt.value);
     const total = values.reduce((a,b) => a+b, 0);
-    document.getElementById(`total-${plat}`).textContent = fmt(total) + ' reach';
+    document.getElementById(`total-${plat}`).textContent = tf('cover.chart.totalReach', '{0} reach', fmt(total));
 
     const ctx = document.getElementById(`chart-${plat}`).getContext('2d');
     if (charts[plat]) charts[plat].destroy();
@@ -729,7 +804,7 @@ async function loadReferences() {
     if (!res.ok) throw 0;
     const d = await res.json();
     document.getElementById('refs-updated').textContent =
-      `${(d.cases || []).length} референсов · обновлено ${esc(d.updated_at || '')}`;
+      tf('refs.updated', '{0} references · updated {1}', (d.cases || []).length, esc(d.updated_at || ''));
     const card = c => {
       const plat = (c.platform || '').toLowerCase().replace(/[^a-z]/g, '');
       const platCls = ['instagram','yandexmusic','yandex','youtube','tiktok'].includes(plat) ? 'rp-' + plat : 'rp-default';
@@ -745,7 +820,7 @@ async function loadReferences() {
         ${c.metric ? `<div><div class="ref-metric">${esc(c.metric)}</div><div class="ref-metric-label">${esc(c.metric_label || '')}</div></div>` : ''}
         <div class="ref-why ${todo ? 'todo' : ''}">${esc(c.why || '')}</div>
         <div class="ref-tags">${c.niche ? `<span class="ref-tag">${esc(c.niche)}</span>` : ''}${(c.tags || []).map(t => `<span class="ref-tag">${esc(t)}</span>`).join('')}</div>
-        ${c.url ? `<a class="ref-link" href="${esc(c.url)}" target="_blank" rel="noopener">Open ${esc(c.platform || 'link')} ↗</a>` : ''}
+        ${c.url ? `<a class="ref-link" href="${esc(c.url)}" target="_blank" rel="noopener">${esc(tf('refs.card.open','Open {0} ↗', c.platform || tf('refs.card.openFallback','link')))}</a>` : ''}
       </div>`;
     };
     const cases = d.cases || [];
@@ -754,15 +829,25 @@ async function loadReferences() {
     grid.innerHTML =
       groups.map(g => `
         <div class="ref-group">
-          <div class="ref-group-title">${esc(g.title)}${g.hint ? ` <span class="ref-group-hint">— ${esc(g.hint)}</span>` : ''}</div>
+          <div class="ref-group-title">${esc(tf(`refs.group.${g.id}.title`, g.title))}${g.hint ? ` <span class="ref-group-hint">— ${esc(tf(`refs.group.${g.id}.hint`, g.hint))}</span>` : ''}</div>
           <div class="refs-cards">${cases.filter(c => c.type === g.id).map(card).join('')}</div>
         </div>`).join('') +
       (ungrouped.length ? `<div class="ref-group"><div class="refs-cards">${ungrouped.map(card).join('')}</div></div>` : '');
   } catch (e) {
     document.getElementById('refs-updated').textContent = '';
-    grid.innerHTML = '<div style="color:rgba(255,255,255,0.5);padding:30px">No references.json found.</div>';
+    grid.innerHTML = `<div style="color:rgba(255,255,255,0.5);padding:30px">${tf('refs.empty','No references.json found.')}</div>`;
   }
 }
+
+// ───── Boot ──────────────────────────────────────────────
+// setLang() -> rerenderAll() -> buildTierCards(), so the first paint of the
+// tier grid happens here. If the locale files are missing the page still
+// renders, using the English inline in the markup.
+(async () => {
+  let stored = null;
+  try { stored = localStorage.getItem('tabuu_lang'); } catch {}
+  await setLang(stored || DEFAULT_LANG);
+})();
 </script>
 
 </body>
