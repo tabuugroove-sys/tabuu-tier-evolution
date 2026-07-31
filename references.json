@@ -1,0 +1,28 @@
+{
+  "updated_at": "2026-07-31",
+  "note": "Promotion benchmarks — accounts/artists whose growth we study and reproduce for TABUU.",
+  "cases": [
+    {
+      "name": "T. Zakharova",
+      "handle": "music.yandex.ru/artist/25364339",
+      "platform": "Yandex Music",
+      "url": "https://music.yandex.ru/artist/25364339",
+      "metric": "925K",
+      "metric_label": "monthly listeners",
+      "niche": "RU streaming",
+      "tags": ["yandex", "playlist growth", "link-in-bio"],
+      "why": "Reference for scaling to ~1M monthly listeners on Yandex Music. Shared as a link-in-bio (utm_source=ig) — the IG→Yandex funnel is exactly the cross-platform play we want to reproduce for TABUU."
+    },
+    {
+      "name": "dizainer__life",
+      "handle": "@dizainer__life",
+      "platform": "Instagram",
+      "url": "https://www.instagram.com/dizainer__life/",
+      "metric": null,
+      "metric_label": "followers",
+      "niche": "Design / lifestyle",
+      "tags": ["instagram", "reels", "niche content"],
+      "why": "TODO: fill the case — follower count + what specifically works (hook style, Reels format, posting cadence, niche angle). Couldn't auto-read: Instagram is behind login."
+    }
+  ]
+}
