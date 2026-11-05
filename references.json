@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-31",
+  "updated_at": "2026-11-05",
   "note": "Референсы — у кого берём идею. Сгруппированы по типу: визуал, звук/жанр, путь и продвижение.",
   "groups": [
     { "id": "visual", "title": "🎨 Визуальный стиль", "hint": "оформление, подача, эстетика" },
@@ -94,6 +94,28 @@
       "niche": "SP · лейбл + клуб",
       "tags": ["цель №1", "владеют Crema", "Afro House"],
       "why": "Не столько референс, сколько ЦЕЛЬ: пятеро участников, сет-листы «Afro House, Indie Dance, Deep and Progressive», заявленная миссия — «давать место артистам с потенциалом». И главное: по данным CNPJ четверо из пяти — учредители CREMA CLUB. Лейбл и площадка это одни и те же люди, поэтому питчим их, а не «клуб»."
+    },
+    {
+      "name": "Dawn Patrol (Maz & Antdot)",
+      "handle": "ra.co/dj/antdot",
+      "platform": "RA",
+      "type": "career",
+      "url": "https://ra.co/dj/antdot",
+      "metric": "5.4K",
+      "metric_label": "подписчиков Antdot на RA",
+      "niche": "Afro House · BR → Ibiza",
+      "tags": ["свой лейбл и вечеринки", "Hï Ibiza 2026", "№1 Beatport"],
+      "why": "Как бразильцы вышли в мир: свой лейбл и серия вечеринок Dawn Patrol, ремиксы №1 в Afro House и Organic House на Beatport, поддержка Black Coffee и Lee Burridge, приглашение Vintage Culture на Hï Ibiza, шоукейс Brazilian Storm на ADE 2022. В 2026 — резиденты Club Room в Hï. У Antdot на RA видна вся история выступлений с 2017: Ibiza, São Paulo, Лондон, Париж. Урок для букинга: свой бренд вечеринок + публичная история каждого сета (IQ-07)."
+    },
+    {
+      "name": "Pedro Tabuada",
+      "handle": "mixcloud.com/pedrotabuada",
+      "platform": "Mixcloud",
+      "type": "career",
+      "url": "https://www.mixcloud.com/pedrotabuada/",
+      "niche": "House · PT → BR",
+      "tags": ["иностранец в Бразилии", "свои вечеринки R4W", "RA + Shotgun"],
+      "why": "Иностранный диджей, который работает и в Бразилии: в Португалии играл на Rock in Rio и Brunch Electronik, среди международных выступлений — Бразилия, Ангола, Испания, Швейцария (какие события в Бразилии — не проверено). Свои вечеринки и лейбл (SHELTER, R4W, SUB Music), события публикуются на RA, Shotgun и Bandsintown, миксы на Mixcloud. Ближе всего к TABUU как к международному дуэту в Бразилии: строит историю через свои вечеринки, а не через стримы (IQ-07)."
     }
   ]
 }
